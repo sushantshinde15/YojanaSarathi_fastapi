@@ -9,10 +9,6 @@ venv/
 # Environment variables
 .env
 
-# ML model
-scheme_model.pkl
-*.pkl
-
 # Runtime database
 feedback.db
 
