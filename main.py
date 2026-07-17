@@ -42,6 +42,7 @@ app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key="yojana_sarathi")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
+templates.env.cache = None  # Workaround for Jinja2/Python 3.14 cache bug (TypeError: unhashable type: 'dict')
 
 
 llm_summary = ChatGroq(model="llama-3.3-70b-versatile", api_key=GROQ_API_KEY_SUMMARY, max_tokens=2048)
