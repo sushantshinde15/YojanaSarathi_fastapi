@@ -1,8 +1,6 @@
 # Python
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
 
 # Virtual Environment
 .venv/
@@ -11,9 +9,12 @@ venv/
 # Environment variables
 .env
 
-# ML Models
+# ML model
 scheme_model.pkl
 *.pkl
+
+# Runtime database
+feedback.db
 
 # IDE
 .vscode/
