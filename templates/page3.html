@@ -1,0 +1,409 @@
+{% extends "base.html" %}
+
+{% block title %}Yojana Sarathi{% endblock %}
+
+{% block nav_home %} active{% endblock %}
+
+{% block extra_css %}
+body{
+background:#fbf5ed;
+}
+
+/* HERO */
+
+.hero-section{
+padding:40px 0 20px 0;
+}
+
+.hero-title{
+font-size:2.8rem;
+font-weight:800;
+background: linear-gradient(90deg,#1f3b73,#4a6fa5);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+margin-bottom:5px;
+text-align:left;
+}
+
+.hero-text{
+font-size:1.2rem;
+font-weight:500;
+color:#555;
+line-height:1.5;
+margin-bottom:25px;
+text-align:left;
+}
+
+/* PANELS */
+
+.panel{
+background:white;
+border-radius:12px;
+box-shadow:0 8px 20px rgba(0,0,0,0.06);
+overflow:hidden;
+}
+
+/* PANEL HEADERS */
+
+.panel-header-green{
+background:linear-gradient(90deg,#2e7d32,#6ccf8c);
+color:white;
+padding:14px 20px;
+font-weight:600;
+}
+
+.panel-header-yellow{
+background:linear-gradient(90deg,#f39c12,#f7c55c);
+color:white;
+padding:14px 20px;
+font-weight:600;
+}
+
+.panel-header-blue{
+background:linear-gradient(90deg,#276bf4,#96b8eb);
+color:white;
+padding:14px 20px;
+font-weight:600;
+}
+
+/* SECTION TITLE */
+
+.section-title{
+text-align:center;
+font-size:24px;
+font-weight:700;
+color:#1f3b73;
+margin-bottom:25px;
+text-transform: uppercase;
+}
+
+/* SCHEME CARD */
+
+.scheme-link{
+text-decoration:none;
+color:inherit;
+display:block;
+}
+
+.scheme-item{
+background:#fcfdfe;
+padding:18px;
+margin:16px 0;
+border-radius:10px;
+border-top:1px solid #e8edf3;
+border-right:1px solid #e8edf3;
+border-bottom:1px solid #e8edf3;
+transition:all 0.3s ease;
+cursor:pointer;
+}
+
+/* BORDER COLORS */
+
+.scheme-item-high{ border-left:5px solid #2e7d32; }
+.scheme-item-moderate{ border-left:5px solid #f39c12; }
+.scheme-item-central,
+.scheme-item-state{ border-left:5px solid #1f3b73; }
+
+/* HOVER EFFECTS */
+
+.scheme-item-high:hover{
+transform:translateY(-6px);
+box-shadow:0 10px 20px rgba(0,0,0,0.1),
+0 0 18px rgba(46,125,50,0.6);
+background:#f4fff7;
+}
+
+.scheme-item-moderate:hover{
+transform:translateY(-6px);
+box-shadow:0 10px 20px rgba(0,0,0,0.1),
+0 0 18px rgba(243,156,18,0.6);
+background:#fffaf0;
+}
+
+.scheme-item-central:hover,
+.scheme-item-state:hover{
+transform:translateY(-6px);
+box-shadow:0 10px 20px rgba(0,0,0,0.1),
+0 0 18px rgba(31,59,115,0.6);
+background:#f5f8ff;
+}
+
+/* TEXT */
+
+.scheme-title{
+font-weight:700;
+font-size:1.05rem;
+color:#004a99;
+}
+
+.scheme-desc{
+font-size:0.9rem;
+color:#555;
+margin:8px 0;
+line-height:1.5;
+}
+
+.scheme-website{
+font-size:0.85rem;
+font-weight:600;
+color:#222;
+}
+
+.scheme-website a{
+color:#06d25f;
+text-decoration:none;
+}
+
+.eligibility{
+font-weight:700;
+color:black;
+margin-top:8px;
+}
+
+/* COLUMN LAYOUT */
+
+.card-columns-wrapper{
+display:flex;
+gap:20px;
+align-items:stretch;
+}
+
+.card-column{
+flex:1;
+display:flex;
+flex-direction:column;
+background:white;
+border-radius:12px;
+padding:20px;
+box-shadow:0 6px 16px rgba(0,0,0,0.06);
+}
+
+/* HELLO ICON */
+
+.hello-icon{
+color:#f4c430;
+-webkit-text-fill-color:#f4c430;
+font-size:1em;
+}
+
+/* MOBILE FIX: stack the two "ALL SCHEMES" columns instead of squeezing side-by-side */
+@media (max-width: 768px){
+    .card-columns-wrapper{
+        flex-direction:column;
+    }
+    .hero-title{
+        font-size:2rem;
+    }
+}
+{% endblock %}
+
+{% block content %}
+<!-- HERO -->
+
+<div class="container hero-section">
+    <h2 class="hero-title">
+        {{ hero_labels.hi }} {{ user_name }} <span class="hello-icon">👋</span>
+    </h2>
+    <p class="hero-text">
+        {{ hero_labels.instruction }}
+    </p>
+</div>
+
+<div class="container" style="margin-top:-20px;">
+
+<div class="row g-4 mb-5">
+
+<!-- HIGHLY RECOMMENDED -->
+
+<div class="col-md-6">
+
+<div class="panel">
+
+<div class="panel-header-green">
+    🟢 {{ column_titles.highly_rec }}
+</div>
+
+<div class="scheme-wrapper">
+
+{% for s in most_recommended %}
+
+<a href="{{ url_for('page4', scheme_name=s.raw_name) }}" class="scheme-link">
+
+<div class="scheme-item scheme-item-high">
+
+<div class="scheme-title">{{ s.name }}</div>
+
+<div class="scheme-desc">{{ s.description }}</div>
+
+<div class="scheme-website">
+Official Website:
+<a href="{{ s.website }}" target="_blank">{{ s.website }}</a>
+</div>
+
+<div class="eligibility">
+Eligibility Match: {{ (s.final_score * 100) | round(1) }}%
+</div>
+
+</div>
+
+</a>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+</div>
+
+<!-- MODERATE -->
+
+<div class="col-md-6">
+
+<div class="panel">
+
+<div class="panel-header-yellow">
+    🟡 {{ column_titles.mod_rec }}
+</div>
+
+<div class="scheme-wrapper">
+
+{% for s in all_schemes[3:6] %}
+
+<a href="{{ url_for('page4', scheme_name=s.raw_name) }}" class="scheme-link">
+
+<div class="scheme-item scheme-item-moderate">
+
+<div class="scheme-title">{{ s.name }}</div>
+
+<div class="scheme-desc">{{ s.description }}</div>
+
+<div class="scheme-website">
+Official Website:
+<a href="{{ s.website }}" target="_blank">{{ s.website }}</a>
+</div>
+
+<div class="eligibility">
+Eligibility Match: {{ (s.final_score * 100) | round(1) }}%
+</div>
+
+</div>
+
+</a>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ALL SCHEMES -->
+
+<h3 class="section-title mt-5">ALL SCHEMES 📋</h3>
+
+<div class="card-columns-wrapper mt-3">
+
+<div class="card-column">
+
+<div class="panel-header-blue mb-3">
+    🏛 {{ column_titles.central }}
+</div>
+
+{% for s in central_schemes %}
+
+<a href="{{ url_for('page4', scheme_name=s.raw_name) }}" class="scheme-link">
+
+<div class="scheme-item scheme-item-central">
+
+<div class="scheme-title">{{ s.name }}</div>
+
+<div class="scheme-desc">{{ s.description }}</div>
+
+<div class="scheme-website">
+Official Website:
+<a href="{{ s.website }}" target="_blank">{{ s.website }}</a>
+</div>
+
+</div>
+
+</a>
+
+{% endfor %}
+
+</div>
+
+<div class="card-column">
+
+<div class="panel-header-blue mb-3">
+    🏢 {{ column_titles.state }}
+</div>
+
+{% for s in state_schemes %}
+
+<a href="{{ url_for('page4', scheme_name=s.raw_name) }}" class="scheme-link">
+
+<div class="scheme-item scheme-item-state">
+
+<div class="scheme-title">{{ s.name }}</div>
+
+<div class="scheme-desc">{{ s.description }}</div>
+
+<div class="scheme-website">
+Official Website:
+<a href="{{ s.website }}" target="_blank">{{ s.website }}</a>
+</div>
+
+</div>
+
+</a>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+</div>
+{% endblock %}
+
+{% block disclaimer %}
+<b>DISCLAIMER:</b> Yojana Sarathi is an AI-powered academic project created for informational purposes only.<br>
+Information shown may not always be accurate or up to date. Users must verify scheme details on official government portals before applying.
+{% endblock %}
+
+{% block extra_js %}
+<script>
+/* =====================================================
+   DATA — injected by Jinja (raw_name added for navigation)
+   Voice logic lives in page3.js — do NOT duplicate it here.
+===================================================== */
+const highSchemes = [
+    {% for s in most_recommended %}
+    { name: "{{ s.name | replace('"','') }}", desc: "{{ s.description | replace('"','') }}", score: "{{ (s.final_score*100)|round(1) }}", raw_name: "{{ s.raw_name }}" },
+    {% endfor %}
+];
+
+const moderateSchemes = [
+    {% for s in all_schemes[3:6] %}
+    { name: "{{ s.name | replace('"','') }}", desc: "{{ s.description | replace('"','') }}", score: "{{ (s.final_score*100)|round(1) }}", raw_name: "{{ s.raw_name }}" },
+    {% endfor %}
+];
+
+const allSchemes = [
+    {% for s in central_schemes %}
+    { name: "{{ s.name | replace('"','') }}", desc: "{{ s.description | replace('"','') }}", raw_name: "{{ s.raw_name }}" },
+    {% endfor %}
+    {% for s in state_schemes %}
+    { name: "{{ s.name | replace('"','') }}", desc: "{{ s.description | replace('"','') }}", raw_name: "{{ s.raw_name }}" },
+    {% endfor %}
+];
+
+const user_name = "{{ user_name }}";
+</script>
+<script src="{{ url_for('static', path='js/voice.js') }}"></script>
+<script src="{{ url_for('static', path='js/page3.js') }}"></script>
+{% endblock %}

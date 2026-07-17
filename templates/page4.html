@@ -1,0 +1,390 @@
+{% extends "base.html" %}
+
+{% block title %}{{ scheme_name }}{% endblock %}
+
+{% block nav_home %} active{% endblock %}
+
+{% block extra_css %}
+body{
+    background:#fbf5ed;
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+}
+
+/* MAIN CARD */
+.scheme-container {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    position: relative;
+    overflow: hidden;
+    margin-top:20px;
+}
+
+/* HEADER */
+.scheme-header{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    margin-bottom:20px;
+}
+.scheme-icon{
+    width:60px;
+    height:60px;
+    border-radius:10px;
+    background:#e9f1ff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+}
+/* CATEGORY ICONS */
+.scheme-icon-education::after { content: "🎓"; }
+.scheme-icon-health::after { content: "🏥"; }
+.scheme-icon-women::after { content: "👩‍💼"; }
+.scheme-icon-agriculture::after { content: "🌾"; }
+.scheme-icon-employment::after { content: "💼"; }
+.scheme-icon-housing::after { content: "🏠"; }
+.scheme-icon-pension::after { content: "👴"; }
+.scheme-icon-welfare::after { content: "🤝"; }
+.scheme-icon-default::after { content: "📄"; }
+
+.scheme-title{
+    font-size:32px;
+    font-weight:700;
+    color:#004a99;
+}
+
+/* TABS */
+.tabs-container{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin:18px 0;
+}
+.tabs{
+    display:flex;
+    gap:10px;
+}
+.tab{
+    padding:8px 18px;
+    border-radius:6px;
+    background:#eef2f6;
+    font-weight:500;
+    cursor:pointer;
+}
+.tab.active{
+    background:#1f3b73;
+    color:white;
+}
+
+/* SUMMARY BOX */
+.summary-box{
+    background:#eef2f7;
+    padding:15px 20px;
+    border-radius:8px;
+    margin-bottom:20px;
+}
+
+/* SECTION TITLES */
+.section-title{
+    font-size:18px;
+    font-weight:600;
+    margin-bottom:10px;
+}
+
+/* CARDS */
+.info-card{
+    border-radius:10px;
+    padding:20px;
+}
+.eligibility { background: #fff6db; }
+.documents { background: #e9f7ec; }
+
+/* APPLY BUTTON */
+.apply-btn{
+    background:#2f8f54;
+    color:white;
+    padding:12px;
+    width:220px;
+    border-radius:8px;
+    font-weight:600;
+    border:none;
+    margin-top:20px;
+    cursor:pointer;
+}
+
+/* SPEAKER */
+.speaker{
+    position:fixed;
+    bottom:90px;
+    left:30px;
+    width:50px;
+    cursor:pointer;
+}
+
+.speaker-btn{
+    width:45px;
+    margin-left:auto;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.speaker-btn:hover{
+    transform:scale(1.1);
+}
+
+/* Glow when speaking */
+.speaker-active{
+    animation: glowPulse 1.2s infinite alternate;
+}
+
+@keyframes glowPulse{
+    from{ filter: drop-shadow(0 0 4px #4da6ff); }
+    to{   filter: drop-shadow(0 0 14px #0d5bf8); }
+}
+
+/* MOBILE FIX: keep the speaker/header inside the screen on small phones */
+@media (max-width: 480px){
+    .scheme-header{
+        flex-wrap:wrap;
+    }
+    .scheme-title{
+        font-size:24px;
+    }
+    .tabs-container{
+        flex-wrap:wrap;
+        gap:10px;
+    }
+}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+     <div class="scheme-container">
+         <!-- Scheme Header -->
+            <div class="scheme-header">
+            <div class="scheme-icon
+            {% if category|lower == 'education' %}
+                scheme-icon-education
+            {% elif category|lower == 'health' %}
+                scheme-icon-health
+            {% elif category|lower == 'women' %}
+                scheme-icon-women
+            {% elif category|lower == 'agriculture' %}
+                scheme-icon-agriculture
+            {% elif category|lower == 'employment' %}
+                scheme-icon-employment
+            {% elif category|lower == 'housing' %}
+                scheme-icon-housing
+            {% elif category|lower == 'pension' %}
+                scheme-icon-pension
+            {% elif category|lower == 'welfare' %}
+                scheme-icon-welfare
+            {% else %}
+                scheme-icon-default
+            {% endif %}
+            ">
+        </div>
+            <div class="scheme-title">{{ scheme_name }}</div>
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs-container">
+            <div class="tabs">
+              <div class="tab active" onclick="scrollToSection('summary')">{{ labels.summary }}</div>
+              <div class="tab" onclick="scrollToSection('eligibility')">{{ labels.eligibility_tab }}</div>
+              <div class="tab" onclick="scrollToSection('documents')">{{ labels.documents_tab }}</div>
+            </div>
+            <button onclick="translatePage()" class="btn btn-sm btn-outline-primary">🌐 Translate</button>
+        </div>
+
+        <!-- SUMMARY -->
+        <div id="summary" class="summary-box">
+            {{ overview | safe }}
+        </div>
+
+        <!-- BENEFITS -->
+        <div class="section-title">{{ labels.benefits_head }}</div>
+        <div id="benefits">
+            {{ benefits | safe }}
+        </div>
+
+        <div class="row mt-4">
+            <!-- ELIGIBILITY -->
+            <div class="col-md-6">
+            <div class="info-card eligibility">
+               <h5>{{ labels.eligibility_tab }}</h5>
+                <div id="eligibility-text">
+                    {{ eligibility | safe }}
+                </div>
+            </div>
+            </div>
+
+            <!-- DOCUMENTS -->
+             <div class="col-md-6">
+            <div class="info-card documents">
+                <h5>{{ labels.documents_tab }}</h5>
+                    <div id="documents-text">
+                        {{ documents | safe }}
+                    </div>
+            </div>
+            </div>
+        </div>
+
+        <a href="{{ website }}" target="_blank">
+           <button class="apply-btn">{{ labels.apply_btn }}</button>
+        </a>
+    </div>
+
+    <!-- SPEAKER -->
+    <img src="{{ url_for('static', path='image/sound.png') }}" class="speaker" id="speakerBtn">
+    <audio id="ttsAudio"></audio>
+</div>
+{% endblock %}
+
+{% block chat_context %}
+<script>
+    window.YS_SCHEME_NAME = "{{ scheme_name | replace('"', '') }}";
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+/* =====================================================
+   1. SCROLL & TAB NAVIGATION  (unchanged)
+===================================================== */
+function scrollToSection(id) {
+    const element = document.getElementById(id);
+    if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+        updateActiveTab(id);
+    }
+}
+
+const sectionIds = ['summary', 'eligibility', 'documents'];
+window.addEventListener('scroll', () => {
+    let scrollPos = window.scrollY + 150;
+    sectionIds.forEach(id => {
+        const sec = document.getElementById(id);
+        if (sec && sec.offsetTop <= scrollPos && (sec.offsetTop + sec.offsetHeight) > scrollPos) {
+            updateActiveTab(id);
+        }
+    });
+});
+
+function updateActiveTab(activeId) {
+    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+    if (activeId === 'summary')     document.querySelectorAll('.tab')[0].classList.add('active');
+    if (activeId === 'eligibility') document.querySelectorAll('.tab')[1].classList.add('active');
+    if (activeId === 'documents')   document.querySelectorAll('.tab')[2].classList.add('active');
+}
+
+/* =====================================================
+   2. TRANSLATION  (unchanged)
+===================================================== */
+let isEnglish = false;
+
+async function translatePage() {
+    const targetLang = isEnglish ? "{{ lang }}" : "en";
+    const btn = event.target;
+    btn.innerText = "Processing...";
+
+    const sections = [
+        { id:"summary",         type:"html" },
+        { id:"benefits",        type:"html" },
+        { id:"eligibility-text",type:"html" },
+        { id:"documents-text",  type:"html" }
+    ];
+
+    for (let item of sections) {
+        const el = document.getElementById(item.id);
+        if (!el) continue;
+        try {
+            const res  = await fetch("/api/translate", {
+                method: "POST",
+                headers: { "Content-Type":"application/json" },
+                body: JSON.stringify({ text: el.innerText, target_lang: targetLang })
+            });
+            const data = await res.json();
+            el.innerHTML = data.translated_text;
+        } catch (err) { console.error("Translation error:", err); }
+    }
+
+    isEnglish = !isEnglish;
+    btn.innerText = isEnglish ? "🌐 Show Original" : "🌐 Translate to English";
+}
+
+/* =====================================================
+   3. SPEAKER / TTS  (enhanced with voice auto-read)
+===================================================== */
+const speaker  = document.getElementById("speakerBtn");
+const audio    = document.getElementById("ttsAudio");
+let isPlaying  = false;
+
+const LANG_MAP = {
+    en:"en-IN", hi:"hi-IN", mr:"mr-IN", te:"te-IN", ta:"ta-IN",
+    kn:"kn-IN", bn:"bn-IN", gu:"gu-IN", ml:"ml-IN", pa:"pa-IN",
+    or:"or-IN", ur:"ur-IN", as:"as-IN"
+};
+
+function buildReadText() {
+    const get  = id => { const el = document.getElementById(id); return el ? el.innerText.trim() : ""; };
+    const name = document.querySelector(".scheme-title") ? document.querySelector(".scheme-title").innerText.trim() : "";
+    return [
+        name            ? "Scheme: " + name + "."                    : "",
+        get("summary")  ? "Summary. "             + get("summary")  + "." : "",
+        get("benefits") ? "Key benefits. "        + get("benefits") + "." : "",
+        get("eligibility-text") ? "Eligibility criteria. " + get("eligibility-text") + "." : "",
+        get("documents-text")   ? "Required documents. "  + get("documents-text")   + "." : "",
+    ].filter(Boolean).join(" ");
+}
+
+async function toggleSpeak() {
+    if (isPlaying) {
+        audio.pause();
+        audio.currentTime = 0;
+        window.speechSynthesis && window.speechSynthesis.cancel();
+        speaker.classList.remove("speaker-active");
+        isPlaying = false;
+        return;
+    }
+
+    speaker.classList.add("speaker-active");
+    isPlaying = true;
+
+    const fullText = buildReadText();
+    const lang     = sessionStorage.getItem("language") || "{{ lang }}";
+
+    try {
+        const res  = await fetch("/api/tts?text=" + encodeURIComponent(fullText) + "&lang=" + lang);
+        if (!res.ok) throw new Error("TTS failed");
+        const blob = await res.blob();
+        audio.src  = URL.createObjectURL(blob);
+        audio.play();
+        audio.onended = () => { speaker.classList.remove("speaker-active"); isPlaying = false; };
+        audio.onerror = () => { speaker.classList.remove("speaker-active"); isPlaying = false; };
+    } catch (err) {
+        // Fallback: Web Speech API
+        const utt  = new SpeechSynthesisUtterance(fullText);
+        utt.lang   = LANG_MAP[lang] || "en-IN";
+        utt.onend  = () => { speaker.classList.remove("speaker-active"); isPlaying = false; };
+        speechSynthesis.speak(utt);
+    }
+}
+
+speaker.addEventListener("click", toggleSpeak);
+
+/* =====================================================
+   4. AUTO-READ ON LOAD (voice mode)
+===================================================== */
+window.addEventListener("load", () => {
+    if (sessionStorage.getItem("voiceMode") === "on") {
+        setTimeout(toggleSpeak, 1200);
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+{% set current_lang = lang or request.session.get('lang', 'en') %}
+<html lang="{{ current_lang }}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Yojana Sarathi{% endblock %}</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+{% block head_extra %}{% endblock %}
+<style>
+/* ---------------- SHARED BASE STYLES ---------------- */
+body{
+    font-family:'Segoe UI', sans-serif;
+    margin:0;
+}
+
+/* NAVBAR */
+.navbar-brand{
+    font-weight:700;
+    font-size:24px;
+    color:#1f3b73;
+}
+.navbar-brand:hover{
+    color:#004a99;
+}
+.nav-link{
+    font-weight:500;
+    margin-left:20px;
+    color:#333;
+    position:relative;
+    padding-bottom:4px;
+    transition:color 0.25s ease;
+}
+.nav-link::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:-2px;
+    width:0%;
+    height:2px;
+    border-radius:2px;
+    background:#004a99;
+    transition:width 0.25s ease;
+}
+.nav-link:hover{
+    color:#004a99;
+}
+.nav-link:hover::after{
+    width:100%;
+}
+.nav-link.active{
+    color:#004a99;
+    font-weight:700;
+}
+.nav-link.active::after{
+    width:100%;
+}
+/* TRICOLOR STRIP */
+.flag-strip{
+    height:10px;
+    background:linear-gradient(
+        to bottom,
+        #ff9933 0%, #ff9933 45%,
+        white 45%, white 55%,
+        #138808 55%, #138808 100%
+    );
+}
+
+/* DISCLAIMER */
+.disclaimer{
+    background:#002147;
+    color:#f1f1f1;
+    text-align:center;
+    padding:20px;
+    font-size:14px;
+    margin-top:80px;
+    line-height:1.6;
+}
+.disclaimer b{
+    color:#7dd3fc;
+}
+
+/* ---------------- MOBILE NAVBAR FIX (added so nav does not look messy on phones) ---------------- */
+@media (max-width: 991px){
+    .navbar-nav .nav-link{
+        margin-left:0;
+        padding:10px 0;
+    }
+}
+
+/* =====================================================
+   GLOBAL CHATBOT WIDGET (Yojana Sarathi Chat)
+   Namespaced with "ysc-" so it never collides with
+   any existing page-specific classes/styles.
+===================================================== */
+.ysc-bubble{
+    position:fixed;
+    right:24px;
+    bottom:24px;
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#1f3b73,#004a99);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:26px;
+    cursor:pointer;
+    box-shadow:0 10px 25px rgba(0,74,153,0.35);
+    z-index:1200;
+    border:none;
+    transition:transform 0.25s ease, box-shadow 0.25s ease;
+}
+.ysc-bubble:hover{
+    transform:translateY(-3px) scale(1.05);
+    box-shadow:0 14px 30px rgba(0,74,153,0.45);
+}
+.ysc-bubble .ysc-icon-chat{ display:block; }
+.ysc-bubble .ysc-icon-close{ display:none; }
+.ysc-bubble.ysc-active .ysc-icon-chat{ display:none; }
+.ysc-bubble.ysc-active .ysc-icon-close{ display:block; }
+
+.ysc-panel{
+    position:fixed;
+    right:24px;
+    bottom:96px;
+    width:370px;
+    max-width:calc(100vw - 32px);
+    height:520px;
+    max-height:calc(100vh - 140px);
+    background:#fff;
+    border-radius:18px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.22);
+    border:1px solid #e7ecf2;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    z-index:1200;
+    opacity:0;
+    transform:translateY(16px) scale(0.98);
+    pointer-events:none;
+    transition:opacity 0.2s ease, transform 0.2s ease;
+}
+.ysc-panel.ysc-open{
+    opacity:1;
+    transform:translateY(0) scale(1);
+    pointer-events:auto;
+}
+
+.ysc-header{
+    background:linear-gradient(135deg,#1f3b73,#004a99);
+    color:#fff;
+    padding:16px 18px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+.ysc-header-avatar{
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.18);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:17px;
+    flex-shrink:0;
+}
+.ysc-header-text{
+    line-height:1.25;
+    overflow:hidden;
+}
+.ysc-header-title{
+    font-weight:700;
+    font-size:15px;
+}
+.ysc-header-sub{
+    font-size:11.5px;
+    opacity:0.85;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.ysc-body{
+    flex:1;
+    overflow-y:auto;
+    padding:16px;
+    background:#f7f9fc;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+.ysc-body::-webkit-scrollbar{ width:6px; }
+.ysc-body::-webkit-scrollbar-thumb{ background:#d7dee8; border-radius:6px; }
+
+.ysc-msg{
+    max-width:82%;
+    padding:10px 14px;
+    border-radius:16px;
+    font-size:14px;
+    line-height:1.5;
+    word-wrap:break-word;
+}
+.ysc-msg-bot{
+    align-self:flex-start;
+    background:#eef2f8;
+    color:#22314f;
+    border-bottom-left-radius:4px;
+}
+.ysc-msg-user{
+    align-self:flex-end;
+    background:linear-gradient(135deg,#1f3b73,#004a99);
+    color:#fff;
+    border-bottom-right-radius:4px;
+}
+
+.ysc-typing{
+    display:flex;
+    gap:4px;
+    align-items:center;
+    padding:12px 14px;
+}
+.ysc-typing span{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:#9aa7bd;
+    animation:ysc-blink 1.2s infinite ease-in-out;
+}
+.ysc-typing span:nth-child(2){ animation-delay:0.2s; }
+.ysc-typing span:nth-child(3){ animation-delay:0.4s; }
+@keyframes ysc-blink{
+    0%, 80%, 100%{ opacity:0.3; transform:translateY(0); }
+    40%{ opacity:1; transform:translateY(-3px); }
+}
+
+.ysc-footer{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:12px;
+    background:#fff;
+    border-top:1px solid #eef1f5;
+}
+.ysc-input{
+    flex:1;
+    border:1px solid #dfe4ec;
+    background:#f7f9fc;
+    border-radius:22px;
+    padding:10px 16px;
+    font-size:14px;
+    outline:none;
+    transition:border-color 0.2s ease;
+}
+.ysc-input:focus{
+    border-color:#004a99;
+    background:#fff;
+}
+.ysc-send{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    border:none;
+    background:linear-gradient(135deg,#1f3b73,#004a99);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    flex-shrink:0;
+    transition:transform 0.2s ease;
+}
+.ysc-send:hover{ transform:scale(1.08); }
+.ysc-send:active{ transform:scale(0.95); }
+
+/* MOBILE FIX: full-width sheet-style panel so it never overflows small screens */
+@media (max-width:480px){
+    .ysc-bubble{
+        right:16px;
+        bottom:16px;
+        width:56px;
+        height:56px;
+    }
+    .ysc-panel{
+        right:12px;
+        left:12px;
+        bottom:84px;
+        width:auto;
+        max-width:none;
+        height:70vh;
+        max-height:70vh;
+    }
+}
+
+/* =====================================================
+   NAVBAR LANGUAGE DROPDOWN (namespaced with "lang-dd-"
+   so it never collides with any existing page styles)
+===================================================== */
+.lang-dd{
+    position:relative;
+}
+.lang-dd-toggle{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    cursor:pointer;
+    user-select:none;
+}
+.lang-dd-caret{
+    font-size:10px;
+    display:inline-block;
+    transition:transform 0.2s ease;
+}
+.lang-dd.lang-dd-open .lang-dd-caret{
+    transform:rotate(180deg);
+}
+.lang-dd-menu{
+    position:absolute;
+    top:calc(100% + 10px);
+    right:0;
+    background:#fff;
+    border:1px solid #e2e8f0;
+    border-radius:10px;
+    box-shadow:0 14px 32px rgba(0,0,0,0.14);
+    min-width:190px;
+    max-height:320px;
+    overflow-y:auto;
+    padding:6px;
+    margin:0;
+    list-style:none;
+    display:none;
+    z-index:1150;
+}
+.lang-dd.lang-dd-open .lang-dd-menu{
+    display:block;
+}
+.lang-dd-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:8px 12px;
+    border-radius:6px;
+    color:#333;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:500;
+}
+.lang-dd-item:hover{
+    background:#f1f5fb;
+    color:#004a99;
+}
+.lang-dd-item.lang-dd-active{
+    background:#eef4ff;
+    color:#004a99;
+    font-weight:700;
+}
+.lang-dd-check{
+    font-size:12px;
+    opacity:0;
+}
+.lang-dd-item.lang-dd-active .lang-dd-check{
+    opacity:1;
+}
+@media (max-width: 991px){
+    .lang-dd-menu{
+        right:auto;
+        left:0;
+    }
+}
+
+{% block extra_css %}{% endblock %}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg bg-white shadow-sm">
+    <div class="container">
+        <a class="navbar-brand" href="{{ url_for('home') }}">Yojana Sarathi</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+                <li class="nav-item">
+                    <a class="nav-link{% block nav_home %}{% endblock %}" href="{{ url_for('home') }}">{{ t("Home", current_lang) }}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link{% block nav_about %}{% endblock %}" href="{{ url_for('about') }}">{{ t("About", current_lang) }}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link{% block nav_feedback %}{% endblock %}" href="{{ url_for('feedback') }}">{{ t("Feedback", current_lang) }}</a>
+                </li>
+                {% set lang_options = [
+                    ('en', 'English'),
+                    ('hi', 'हिन्दी (Hindi)'),
+                    ('mr', 'मराठी (Marathi)'),
+                    ('kn', 'ಕನ್ನಡ (Kannada)'),
+                    ('gu', 'ગુજરાતી (Gujarati)'),
+                    ('ta', 'தமிழ் (Tamil)'),
+                    ('te', 'తెలుగు (Telugu)'),
+                    ('bn', 'বাংলা (Bengali)'),
+                    ('ml', 'മലയാളം (Malayalam)'),
+                    ('pa', 'ਪੰਜਾਬੀ (Punjabi)'),
+                    ('or', 'ଓଡ଼ିଆ (Odia)'),
+                    ('as', 'অসমীয়া (Assamese)'),
+                    ('ur', 'اردو (Urdu)')
+                ] %}
+                <li class="nav-item lang-dd" id="lang-dd">
+                    <a class="nav-link lang-dd-toggle" href="#" id="lang-dd-toggle" role="button" aria-haspopup="true" aria-expanded="false">
+                        🌐 {{ t("Language", current_lang) }} <span class="lang-dd-caret">▾</span>
+                    </a>
+                    <ul class="lang-dd-menu" id="lang-dd-menu">
+                        {% for code, label in lang_options %}
+                        <li>
+                            <a class="lang-dd-item{% if current_lang == code %} lang-dd-active{% endif %}" href="/set-language/{{ code }}">
+                                <span>{{ label }}</span>
+                                <span class="lang-dd-check">✓</span>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="flag-strip"></div>
+
+{% block content %}{% endblock %}
+
+<div class="disclaimer">
+{% block disclaimer %}
+<b>{{ t_clean("DISCLAIMER:", current_lang) }}</b> {{ t_clean("Yojana Sarathi is an AI-powered academic project created for informational purposes only.", current_lang) }}<br>
+{{ t_clean("Information shown may not always be accurate or up to date. Users must verify scheme details on official government portals before applying.", current_lang) }}
+{% endblock %}
+</div>
+
+<!-- ================= GLOBAL CHATBOT WIDGET ================= -->
+<button class="ysc-bubble" id="ysc-bubble" type="button" aria-label="Open chat">
+    <span class="ysc-icon-chat">💬</span>
+    <span class="ysc-icon-close">×</span>
+</button>
+
+<div class="ysc-panel" id="ysc-panel">
+    <div class="ysc-header">
+        <div class="ysc-header-avatar">🙏</div>
+        <div class="ysc-header-text">
+            <div class="ysc-header-title">Yojana Sarathi Chat</div>
+            <div class="ysc-header-sub" id="ysc-header-sub">{{ t_clean("Ask me about any government scheme", current_lang) }}</div>
+        </div>
+    </div>
+    <div class="ysc-body" id="ysc-body">
+        <div class="ysc-msg ysc-msg-bot">{{ t_clean("Hi there! 👋 Do you need help finding or understanding a scheme?", current_lang) }}</div>
+    </div>
+    <div class="ysc-footer">
+        <input type="text" class="ysc-input" id="ysc-input" placeholder="{{ t_clean('Ask your question here...', current_lang) }}" autocomplete="off">
+        <button class="ysc-send" id="ysc-send" type="button" aria-label="Send message">➤</button>
+    </div>
+</div>
+
+{% block chat_context %}{% endblock %}
+
+<script>
+(function () {
+    var langDd     = document.getElementById('lang-dd');
+    var langToggle = document.getElementById('lang-dd-toggle');
+    if (langDd && langToggle) {
+        langToggle.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var opening = !langDd.classList.contains('lang-dd-open');
+            langDd.classList.toggle('lang-dd-open', opening);
+            langToggle.setAttribute('aria-expanded', opening ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+            if (!langDd.contains(e.target)) {
+                langDd.classList.remove('lang-dd-open');
+                langToggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+})();
+</script>
+
+<script>
+(function () {
+    var bubble  = document.getElementById('ysc-bubble');
+    var panel   = document.getElementById('ysc-panel');
+    var body    = document.getElementById('ysc-body');
+    var input   = document.getElementById('ysc-input');
+    var sendBtn = document.getElementById('ysc-send');
+    var subLine = document.getElementById('ysc-header-sub');
+    var history = [];
+
+    if (window.YS_SCHEME_NAME && subLine) {
+        subLine.textContent = window.YS_SCHEME_NAME;
+    }
+
+    function toggleChat() {
+        var opening = !panel.classList.contains('ysc-open');
+        panel.classList.toggle('ysc-open', opening);
+        bubble.classList.toggle('ysc-active', opening);
+        if (opening) { setTimeout(function () { input.focus(); }, 150); }
+    }
+
+    function addMessage(text, role) {
+        var div = document.createElement('div');
+        div.className = 'ysc-msg ' + (role === 'user' ? 'ysc-msg-user' : 'ysc-msg-bot');
+        div.textContent = text;
+        body.appendChild(div);
+        body.scrollTop = body.scrollHeight;
+    }
+
+    function showTyping() {
+        var div = document.createElement('div');
+        div.className = 'ysc-msg ysc-msg-bot ysc-typing';
+        div.id = 'ysc-typing-indicator';
+        div.innerHTML = '<span></span><span></span><span></span>';
+        body.appendChild(div);
+        body.scrollTop = body.scrollHeight;
+    }
+
+    function hideTyping() {
+        var t = document.getElementById('ysc-typing-indicator');
+        if (t) t.remove();
+    }
+
+    async function sendMessage() {
+        var text = input.value.trim();
+        if (!text) return;
+
+        addMessage(text, 'user');
+        history.push({ role: 'user', content: text });
+        input.value = '';
+        showTyping();
+
+        try {
+            var res = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message: text,
+                    scheme_name: window.YS_SCHEME_NAME || '',
+                    history: history.slice(-10)
+                })
+            });
+            var data = await res.json();
+            hideTyping();
+            var reply = data.reply || "Sorry, I couldn't process that. Please try again.";
+            addMessage(reply, 'bot');
+            history.push({ role: 'assistant', content: reply });
+        } catch (err) {
+            hideTyping();
+            addMessage("Sorry, I couldn't reach the assistant. Please check your connection and try again.", 'bot');
+        }
+    }
+
+    bubble.addEventListener('click', toggleChat);
+    sendBtn.addEventListener('click', sendMessage);
+    input.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') sendMessage();
+    });
+})();
+</script>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

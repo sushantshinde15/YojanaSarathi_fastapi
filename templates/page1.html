@@ -1,0 +1,503 @@
+{% extends "base.html" %}
+
+{% block title %}Yojana Sarathi{% endblock %}
+
+{% block nav_home %} active{% endblock %}
+
+{% block head_extra %}
+<script src="{{ url_for('static', path='js/voice.js') }}"></script>
+{% endblock %}
+
+{% block extra_css %}
+body{
+    background:#FFF6E9;
+}
+
+/* HERO */
+.hero{
+    padding:20px 0 60px 0;
+}
+.hero-title{
+    font-size:46px;
+    font-weight:700;
+    color:#1f3b73;
+    margin-bottom:20px;
+    line-height:1.2;
+}
+.hero-title .line1{
+    white-space:nowrap;
+}
+.hero-text{
+    font-size:18px;
+    color:#555;
+    max-width:520px;
+    margin-bottom:35px;
+}
+
+/* LANGUAGE GRID */
+.language-title{
+    font-weight:600;
+    margin-bottom:18px;
+    color:#333;
+}
+.language-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+    max-width:440px;
+}
+.lang-btn{
+    background:white;
+    border:1px solid #e2e2e2;
+    padding:10px;
+    border-radius:10px;
+    font-size:14px;
+    transition:all .25s ease;
+}
+.lang-btn:hover{
+    background:#1f3b73;
+    color:white;
+    border-color:#1f3b73;
+    transform:translateY(-3px);
+}
+
+/* HERO IMAGE */
+.image-card{
+    display:flex;
+    justify-content:flex-start;
+    align-items:center;
+}
+.image-card img{
+    width:150%;
+    max-width:750px;
+    margin-left:-10px;
+    filter: drop-shadow(0 20px 30px rgba(0,0,0,0.15));
+    animation:float 6s ease-in-out infinite;
+}
+@keyframes float{
+    0%{transform:translateY(0)}
+    50%{transform:translateY(-15px)}
+    100%{transform:translateY(0)}
+}
+
+/* HOW IT WORKS */
+.how-section{
+    margin-top:90px;
+}
+.how-title{
+    text-align:center;
+    font-weight:700;
+    color:#1f3b73;
+    margin-bottom:50px;
+}
+.scheme-card{
+    background:white;
+    border-radius:16px;
+    padding:30px;
+    text-align:center;
+    box-shadow:0 6px 18px rgba(0,0,0,0.08);
+    transition:all .3s ease;
+    height:100%;
+}
+.scheme-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 12px 30px rgba(0,0,0,0.15);
+}
+.scheme-card img{
+    width:70px;
+    margin-bottom:20px;
+}
+.scheme-card h5{
+    font-weight:600;
+    color:#1f3b73;
+    margin-bottom:12px;
+}
+.scheme-card p{
+    font-size:15px;
+    color:#555;
+}
+
+/* Minimalist Small Search Bar */
+.mini-search {
+    max-width: 380px;
+}
+.search-wrapper {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 50px;
+    padding: 4px;
+    border: 1px solid #e0e0e0;
+}
+.search-wrapper input {
+    border: none;
+    padding: 8px 20px;
+    flex-grow: 1;
+    outline: none;
+    font-size: 14px;
+    background: transparent;
+}
+.search-wrapper button {
+    background: #1f3b73;
+    color: white;
+    border: none;
+    padding: 8px 22px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+.search-wrapper button:hover {
+    background: #002147;
+    transform: scale(1.02);
+}
+.search-wrapper {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 50px;
+    padding: 4px 15px 4px 4px;
+    border: 1px solid #e0e0e0;
+    position: relative;
+}
+
+.mic-btn {
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    color: #1f3b73;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+    transition: transform 0.2s, color 0.2s;
+}
+
+.mic-btn svg {
+    width: 22px;
+    height: 22px;
+    stroke: #1f3b73;
+}
+
+.mic-btn:hover {
+    color: #002147;
+    transform: scale(1.1);
+}
+
+.listening {
+    color: #ef4444 !important;
+}
+.listening svg {
+    stroke: #ef4444 !important;
+    animation: pulse-red 1.5s infinite;
+}
+
+/* MOBILE FIX: keep hero image inside the screen instead of overflowing (150% width was desktop-only) */
+@media (max-width: 991px){
+    .image-card{
+        justify-content:center;
+        margin-top:30px;
+    }
+    .image-card img{
+        width:100%;
+        max-width:420px;
+        margin-left:0;
+    }
+    .hero-title{
+        font-size:34px;
+    }
+}
+@media (max-width: 420px){
+    .language-grid{
+        grid-template-columns:repeat(3,1fr);
+    }
+}
+{% endblock %}
+
+{% block content %}
+<!-- HERO -->
+<section class="hero">
+<div class="container">
+    <div class="row align-items-center">
+        <!-- Left Column: Text + Languages -->
+        <div class="col-lg-6">
+            <h1 class="hero-title">
+                <span class="line1">Discover Government Schemes</span><br>
+                <span class="line2">Tailored for You</span>
+            </h1>
+            <p class="hero-text">
+                Enter your details and instantly check which central and state schemes you qualify for.
+            </p>
+ <!-- SEARCH BAR SECTION -->
+<div class="mini-search mb-5" style="position: relative;">
+    <div class="search-wrapper shadow-sm">
+        <input type="text" id="schemeSearch" placeholder="Search for a specific scheme..." autocomplete="off">
+
+        <!-- Transparent Mic Button -->
+        <button type="button" id="voiceSearchBtn" class="mic-btn" title="Voice Search" style="background: transparent;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                <line x1="12" y1="19" x2="12" y2="23"></line>
+                <line x1="8" y1="23" x2="16" y2="23"></line>
+            </svg>
+        </button>
+
+        <button type="button" onclick="performSearch()">Search</button>
+    </div>
+    <!-- Suggestions Box (for dynamic typing) -->
+    <div id="suggestionsBox" class="shadow-sm" style="display:none; position:absolute; top:100%; left:0; right:0; background:white; border-radius:10px; z-index:1000; margin-top:5px; border:1px solid #eee; overflow:hidden;"></div>
+</div>
+            <h5 class="language-title">Select Language / भाषा चुनें </h5>
+            <div class="language-grid">
+                <button class="lang-btn" data-lang="en" onclick="goToPage2('en')">English</button>
+                <button class="lang-btn" data-lang="hi" onclick="goToPage2('hi')">हिन्दी</button>
+                <button class="lang-btn" data-lang="mr" onclick="goToPage2('mr')">मराठी</button>
+                <button class="lang-btn" data-lang="te" onclick="goToPage2('te')">తెలుగు</button>
+                <button class="lang-btn" data-lang="bn" onclick="goToPage2('bn')">বাংলা</button>
+                <button class="lang-btn" data-lang="gu" onclick="goToPage2('gu')">ગુજરાતી</button>
+                <button class="lang-btn" data-lang="kn" onclick="goToPage2('kn')">ಕನ್ನಡ</button>
+                <button class="lang-btn" data-lang="ml" onclick="goToPage2('ml')">മലയാളം</button>
+                <button class="lang-btn" data-lang="ta" onclick="goToPage2('ta')">தமிழ்</button>
+                <button class="lang-btn" data-lang="pa" onclick="goToPage2('pa')">ਪੰਜਾਬੀ</button>
+                <button class="lang-btn" data-lang="or" onclick="goToPage2('or')">ଓଡ଼ିଆ</button>
+                <button class="lang-btn" data-lang="ur" onclick="goToPage2('ur')">اردو</button>
+                <button class="lang-btn" data-lang="as" onclick="goToPage2('as')">অসমীয়া</button>
+            </div>
+
+<!-- VOICE BUTTON -->
+<button onclick="startVoiceLanguage()" class="btn btn-primary mt-3">
+🎤 VOICE ASSISTANT
+</button>
+        </div>
+
+        <!-- Right Column: Image -->
+        <div class="col-lg-6">
+            <div class="image-card">
+                <img src="{{ url_for('static', path='image/india.png') }}">
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+
+<!-- HOW TO FIND SCHEMES -->
+<section class="container how-section">
+<h2 class="how-title">How to Find Government Schemes</h2>
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="scheme-card">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+            <h5>Enter Your Details</h5>
+            <p>Provide basic information like age, income, state, caste and occupation so the system can understand your eligibility.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="scheme-card">
+            <img src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png">
+            <h5>AI Finds Matching Schemes</h5>
+            <p>Our machine learning model analyzes your profile and searches hundreds of government schemes that match your eligibility.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="scheme-card">
+            <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png">
+            <h5>View & Apply</h5>
+            <p>See scheme benefits, eligibility criteria and visit official government portals to apply easily.</p>
+        </div>
+    </div>
+</div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+/* =====================================================
+   ELEMENT SELECTORS
+===================================================== */
+const voiceSearchBtn   = document.getElementById('voiceSearchBtn');
+const searchInputField = document.getElementById('schemeSearch');
+const suggestionsBox   = document.getElementById('suggestionsBox');
+
+/* =====================================================
+   REDIRECTION & MANUAL SEARCH
+===================================================== */
+function goToPage2(lang) {
+    sessionStorage.setItem("language", lang);
+    window.location.href = "/page2?lang=" + lang;
+}
+
+function performSearch() {
+    const query = searchInputField.value.trim();
+    if (query) {
+        window.location.href = `/scheme/${encodeURIComponent(query)}`;
+    }
+}
+
+searchInputField.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') performSearch();
+});
+
+/* =====================================================
+   AUTO-SUGGESTIONS
+===================================================== */
+searchInputField.addEventListener('input', async () => {
+    const query = searchInputField.value.trim();
+    if (query.length < 1) { suggestionsBox.style.display = 'none'; return; }
+    try {
+        const response = await fetch(`/api/suggestions?q=${encodeURIComponent(query)}`);
+        const matches  = await response.json();
+        if (matches.length > 0) {
+            suggestionsBox.innerHTML = matches.map(name =>
+                `<div class="suggestion-item" style="padding:10px; cursor:pointer; border-bottom:1px solid #eee;"
+                      onclick="selectSuggestion('${name.replace(/'/g, "\\'")}')">${name}</div>`
+            ).join('');
+            suggestionsBox.style.display = 'block';
+        } else {
+            suggestionsBox.style.display = 'none';
+        }
+    } catch (err) { console.error("Suggestion fetch error:", err); }
+});
+
+function selectSuggestion(name) {
+    searchInputField.value = name;
+    suggestionsBox.style.display = 'none';
+    performSearch();
+}
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.mini-search')) suggestionsBox.style.display = 'none';
+});
+
+/* =====================================================
+   MIC BUTTON — voice scheme search (search bar mic)
+===================================================== */
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (SpeechRecognition) {
+    const recognition  = new SpeechRecognition();
+    recognition.lang   = 'en-IN';
+
+    voiceSearchBtn.addEventListener('click', () => {
+        try { recognition.start(); } catch (e) { recognition.stop(); }
+    });
+
+    recognition.onstart = () => {
+        voiceSearchBtn.classList.add('listening');
+        searchInputField.placeholder = "Listening for scheme name...";
+    };
+    recognition.onend = () => {
+        voiceSearchBtn.classList.remove('listening');
+        searchInputField.placeholder = "Search for a specific scheme...";
+    };
+    recognition.onresult = async (event) => {
+        const spokenText = event.results[0][0].transcript;
+        searchInputField.value = spokenText;
+        try {
+            const response = await fetch(`/api/voice-match?q=${encodeURIComponent(spokenText)}`);
+            const data     = await response.json();
+            if (data.best_match) {
+                window.location.href = `/scheme/${encodeURIComponent(data.best_match)}`;
+            } else { performSearch(); }
+        } catch (error) { performSearch(); }
+    };
+    recognition.onerror = () => voiceSearchBtn.classList.remove('listening');
+}
+
+/* =====================================================
+   VOICE ASSISTANT — language detection table
+===================================================== */
+const LANG_DETECT = [
+    { code:"hi", keywords:["hindi","hinde","hindee","हिंदी","हिन्दी"] },
+    { code:"mr", keywords:["marathi","marathee","maratha","मराठी"] },
+    { code:"te", keywords:["telugu","telgu","తెలుగు"] },
+    { code:"ta", keywords:["tamil","tamizh","தமிழ்"] },
+    { code:"kn", keywords:["kannada","kannad","ಕನ್ನಡ"] },
+    { code:"bn", keywords:["bengali","bangla","bengalee","বাংলা"] },
+    { code:"gu", keywords:["gujarati","gujrati","ગુજરાતી"] },
+    { code:"ml", keywords:["malayalam","malayaalam","മലയാളം"] },
+    { code:"pa", keywords:["punjabi","panjabi","ਪੰਜਾਬੀ"] },
+    { code:"or", keywords:["odia","oriya","ଓଡ଼ିଆ"] },
+    { code:"ur", keywords:["urdu","اردو"] },
+    { code:"as", keywords:["assamese","axomiya","অসমীয়া"] },
+    { code:"en", keywords:["english","eng","अंग्रेजी"] },
+];
+
+const LANG_CONFIRM = {
+    en:"English selected. Taking you to the form now.",
+    hi:"हिंदी चुनी गई। अब फॉर्म पर ले जा रहे हैं।",
+    mr:"मराठी निवडली. आता फॉर्मवर घेऊन जात आहोत.",
+    te:"తెలుగు ఎంచుకోబడింది. ఇప్పుడు ఫారమ్‌కు వెళ్తున్నాం.",
+    ta:"தமிழ் தேர்ந்தெடுக்கப்பட்டது. இப்போது படிவத்திற்கு செல்கிறோம்.",
+    kn:"ಕನ್ನಡ ಆಯ್ಕೆ ಆಗಿದೆ. ಈಗ ಫಾರ್ಮ್‌ಗೆ ಹೋಗುತ್ತಿದ್ದೇವೆ.",
+    bn:"বাংলা নির্বাচিত হয়েছে। এখন ফর্মে নিয়ে যাচ্ছি।",
+    gu:"ગુજરાતી પસંદ થઈ. હવે ફોર્મ પર લઈ જઈ રહ્યા છીએ.",
+    ml:"മലയാളം തിരഞ്ഞെടുത്തു. ഇപ്പോൾ ഫോമിലേക്ക് പോകുന്നു.",
+    pa:"ਪੰਜਾਬੀ ਚੁਣੀ ਗਈ। ਹੁਣ ਫਾਰਮ 'ਤੇ ਲੈ ਜਾ ਰਹੇ ਹਾਂ।",
+    or:"ଓଡ଼ିଆ ଚୟନ ହୋଇଛି। ଏବେ ଫର୍ମ ଦେଖାଇବୁ।",
+    ur:"اردو منتخب ہوئی۔ اب فارم پر لے جا رہے ہیں۔",
+    as:"অসমীয়া বাছনি হৈছে। এতিয়া ফৰ্মলৈ নিয়া হৈছে।",
+};
+
+function detectLang(speech) {
+    if (!speech) return null;
+    const lower = speech.toLowerCase();
+    for (const entry of LANG_DETECT) {
+        if (entry.keywords.some(kw => lower.includes(kw))) return entry.code;
+    }
+    return null;
+}
+
+function highlightLangButton(code) {
+    document.querySelectorAll(".lang-btn").forEach(btn => {
+        if (btn.dataset.lang === code) {
+            btn.style.background   = "#1f3b73";
+            btn.style.color        = "white";
+            btn.style.borderColor  = "#1f3b73";
+            btn.style.transform    = "translateY(-3px)";
+        }
+    });
+}
+
+function askLanguage(attempts) {
+    if (attempts === undefined) attempts = 0;
+    if (attempts >= 4) {
+        speak("Defaulting to English. Taking you to the form.", () => {
+            sessionStorage.setItem("language", "en");
+            sessionStorage.setItem("voiceMode", "on");
+            window.location.href = "/page2?lang=en";
+        });
+        return;
+    }
+    const prompt = attempts === 0
+        ? "Please say your preferred language. For example: Hindi, Marathi, English, Telugu, Tamil."
+        : "Sorry, I did not understand. Please say your language name clearly. For example: Hindi, English, Marathi.";
+
+    speak(prompt, () => {
+        listen(speech => {
+            const code = detectLang(speech);
+            if (code) {
+                highlightLangButton(code);
+                sessionStorage.setItem("language", code);
+                sessionStorage.setItem("voiceMode", "on");
+                speak(LANG_CONFIRM[code] || LANG_CONFIRM["en"], () => {
+                    window.location.href = "/page2?lang=" + code;
+                });
+            } else {
+                askLanguage(attempts + 1);
+            }
+        });
+    });
+}
+
+function startVoiceLanguage() {
+    if (typeof speak !== "function" || typeof listen !== "function") {
+        alert("Voice Assistant is still loading. Please try again in a moment.");
+        return;
+    }
+    speak("Welcome to Yojana Sarathi. I will guide you through the entire process step by step.", () => {
+        askLanguage(0);
+    });
+}
+</script>
+{% endblock %}

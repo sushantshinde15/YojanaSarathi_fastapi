@@ -1,0 +1,307 @@
+{% extends "base.html" %}
+
+{% block title %}About Us | Yojana Sarathi{% endblock %}
+
+{% block nav_about %} active{% endblock %}
+
+{% block extra_css %}
+:root {
+    --primary-blue: #004a99;
+    --accent-green: #1f9d55;
+    --accent-cyan: #00b4d8;
+    --edge-grey: #e2e8f0;
+    --text-dark: #1f2937;
+    --text-muted: #6b7280;
+}
+
+body {
+    background: #FFF6E9;
+    color: var(--text-dark);
+}
+
+/* Main Container */
+.container-main {
+    max-width: 1150px;
+    margin: 70px auto;
+    padding: 0 20px;
+}
+
+/* About Card */
+.about-card {
+    background: #ffffff;
+    border: 1px solid var(--edge-grey);
+    border-radius: 16px;
+    padding: 50px;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.05);
+}
+
+.about-card h1 {
+    color: var(--primary-blue);
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.about-card p {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    margin-bottom: 22px;
+}
+
+.highlight {
+    background: #f1f9ff;
+    border-left: 5px solid var(--accent-cyan);
+    padding: 18px 22px;
+    border-radius: 8px;
+    margin: 35px 0;
+}
+
+.value-box {
+    background: #f9fafb;
+    border: 1px solid var(--edge-grey);
+    border-radius: 12px;
+    padding: 28px;
+    height: 100%;
+}
+
+.value-box h5 {
+    color: var(--primary-blue);
+    font-weight: 700;
+}
+
+/* HOW IT WORKS */
+.how-section {
+    margin-top: 90px;
+    text-align: center;
+}
+
+.how-section small {
+    color: var(--text-muted);
+    letter-spacing: 1.2px;
+    font-weight: 600;
+}
+
+.how-section h2 {
+    font-weight: 800;
+    margin: 15px 0 60px;
+}
+
+.steps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.step {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 35px 30px;
+    width: 240px;
+    box-shadow: 0 18px 35px rgba(0,0,0,0.08);
+}
+
+.step img {
+    width: 60px;
+    margin-bottom: 18px;
+}
+
+.step h5 {
+    font-weight: 700;
+    color: var(--accent-green);
+}
+
+.step p {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+}
+
+.arrow {
+    font-size: 40px;
+    color: #cbd5e1;
+}
+
+@media (max-width: 768px) {
+    .arrow {
+        display: none;
+    }
+}
+
+/* VISION & MISSION – ACADEMIC FLOW STYLE */
+.vision-mission-text {
+    max-width: 950px;
+    margin: 80px auto 0;
+}
+
+.vision-mission-text h2 {
+    font-weight: 800;
+    color: var(--primary-blue);
+    margin-bottom: 25px;
+}
+
+.vision-mission-text p {
+    font-size: 1.05rem;
+    line-height: 1.9;
+    color: var(--text-dark);
+    margin-bottom: 18px;
+}
+
+.vision-mission-text strong {
+    color: var(--primary-blue);
+}
+
+/* =========================
+   TWO DIFFERENT HIGHLIGHTS
+   ========================= */
+
+/* FIRST highlight – GREEN (info / positive) */
+.highlight:nth-of-type(1) {
+    background: #ecfdf5;
+    border-left: 5px solid #16a34a;
+    color: #065f46;
+}
+
+/* SECOND highlight – WARNING (attention) */
+.highlight:nth-of-type(2) {
+    background: #fffbeb;
+    border-left: 5px solid #f59e0b;
+    color: #92400e;
+}
+
+/* ==============================
+   VALUE BOX SELECT / HOVER EFFECT
+   ============================== */
+
+.value-box {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.value-box:hover {
+    transform: translateY(-6px) scale(1.02);
+    border-color: var(--primary-blue);
+    background: #ffffff;
+    box-shadow: 0 0 25px rgba(0, 180, 216, 0.35);
+}
+
+/* Optional: title highlight on hover */
+.value-box:hover h5 {
+    color: var(--accent-cyan);
+}
+
+/* MOBILE FIX: card padding and step width so nothing overflows on phones */
+@media (max-width: 576px){
+    .about-card{
+        padding:25px;
+    }
+    .container-main{
+        margin:35px auto;
+    }
+    .step{
+        width:100%;
+        max-width:280px;
+    }
+}
+{% endblock %}
+
+{% block content %}
+<div class="container-main">
+
+    <!-- ABOUT -->
+    <div class="about-card">
+        <h1>About Yojana Sarathi</h1>
+
+        <p>
+            <strong>Yojana Sarathi</strong>  is an AI-powered academic project developed to enhance awareness and accessibility of Indian government welfare schemes. Despite the availability of numerous schemes aimed at socio-economic development, many eligible beneficiaries remain unaware due to complex information structures and limited digital literacy.
+
+The project utilizes artificial intelligence to analyse basic user inputs and recommend relevant schemes. The system presents information in a structured and user-friendly format, including eligibility criteria, benefits, and documentation requirements.
+
+        </p>
+         <p>
+            Ethical considerations such as data privacy, transparency, and responsible AI usage
+            are integral to the project design.Yojana Sarathi acts as a <strong>digital guide</strong>, helping users understand schemes
+            before visiting official portals.
+        </p>
+
+        <div class="highlight">The project demonstrates how AI can be responsibly applied to improve information dissemination and digital inclusion in public welfare systems.</div>
+
+        <!-- VISION & MISSION -->
+<div class="vision-mission mt-5">
+
+    <h2 class="section-title">Our Vision</h2>
+    <p class="section-text">
+        To empower citizens with accessible, transparent, and simplified
+        information about government welfare schemes using responsible
+        artificial intelligence.
+    </p>
+
+    <h2 class="section-title mt-4">Our Mission</h2>
+    <p class="section-text">
+        Our mission is to simplify complex government scheme information,
+        increase awareness among eligible beneficiaries, promote digital
+        inclusion and accessibility, demonstrate ethical and academic use of
+        artificial intelligence, and guide users toward official government
+        portals with clarity and confidence.
+    </p>
+
+</div>
+        <div class="row g-4 mt-4">
+            <div class="col-md-4">
+                <div class="value-box">
+                    <h5>Accessibility</h5>
+                    <p>Simple language and multilingual support.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="value-box">
+                    <h5>Transparency</h5>
+                    <p>Clear information with official verification.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="value-box">
+                    <h5>Academic Integrity</h5>
+                    <p>Ethical AI usage and responsible design.</p>
+                </div>
+            </div>
+        </div>
+         <div class="highlight">
+            Yojana Sarathi does not function as an official application portal.
+            It acts as an <strong>informational support system</strong> that prepares users
+            before visiting official government websites.
+        </div>
+    </div>
+
+    <!-- HOW IT WORKS -->
+    <div class="how-section">
+        <small>HOW IT WORKS</small>
+        <h2>Easy Steps to Apply for Government Schemes</h2>
+
+        <div class="steps">
+            <div class="step">
+                <img src="https://cdn-icons-png.flaticon.com/512/942/942748.png">
+                <h5>Enter Details</h5>
+                <p>Provide your basic information.</p>
+            </div>
+
+            <div class="arrow">➜</div>
+
+            <div class="step">
+                <img src="https://cdn-icons-png.flaticon.com/512/709/709592.png">
+                <h5>Search</h5>
+                <p>Find schemes relevant to you.</p>
+            </div>
+
+            <div class="arrow">➜</div>
+
+            <div class="step">
+                <img src="https://cdn-icons-png.flaticon.com/512/2921/2921222.png">
+                <h5>Select & Apply</h5>
+                <p>Choose the best scheme and proceed.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

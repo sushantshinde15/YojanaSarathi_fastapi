@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+jinja2
+python-multipart
+itsdangerous
+gTTS
+deep-translator
+python-dotenv
+joblib
+pandas
+scikit-learn
+langchain
+langchain-groq

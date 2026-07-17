@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}Yojana Sarathi{% endblock %}
+
+{% block nav_feedback %} active{% endblock %}
+
+{% block extra_css %}
+body{
+    background:#FFF6E9;
+}
+
+/* FEEDBACK CARD */
+.main-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 50px 0;
+}
+.feedback-card {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 15px 35px rgba(31, 59, 115, 0.08);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+.feedback-header h1 {
+    font-weight: 800;
+    color: var(--brand-blue);
+    text-align: center;
+    margin-bottom: 10px;
+}
+.feedback-highlight {
+    background: #f0f4f8;
+    border-left: 5px solid var(--brand-blue);
+    padding: 15px;
+    border-radius: 8px;
+    color: #444;
+    font-size: 0.95rem;
+    margin-bottom: 30px;
+    text-align: center;
+}
+.brand-text {
+    color: var(--brand-blue);
+    font-weight: 700;
+}
+
+/* FORM STYLING */
+.form-label {
+    font-weight: 600;
+    color: #444;
+    font-size: 0.9rem;
+}
+.form-control {
+    border-radius: 10px;
+    padding: 12px 15px;
+    border: 1px solid #e0e0e0;
+    background-color: #fdfdfd;
+    transition: 0.3s;
+}
+.form-control:focus {
+    border-color: var(--brand-blue);
+    box-shadow: 0 0 0 4px rgba(31, 59, 115, 0.1);
+}
+.btn-submit {
+    background: var(--brand-blue);
+    color: white;
+    border: none;
+    padding: 12px 40px;
+    border-radius: 10px;
+    font-weight: 700;
+    width: 100%;
+    margin-top: 20px;
+    transition: 0.3s;
+}
+.btn-submit:hover {
+    background: var(--brand-navy);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* MOBILE FIX: smaller card padding so the form is not cramped on phones */
+@media (max-width: 576px){
+    .feedback-card{
+        padding:25px;
+    }
+    .main-content{
+        padding:30px 0;
+    }
+}
+{% endblock %}
+
+{% block content %}
+<!-- FEEDBACK FORM -->
+<main class="main-content">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <div class="feedback-card">
+                    <div class="feedback-header">
+                        <h1>📝 Feedback</h1>
+                    </div>
+
+                    <div class="feedback-highlight">
+                        Your insights help us improve <span class="brand-text">Yojana Sarathi</span>.
+                        We value your suggestions and experience.
+                    </div>
+
+                    <form action="{{ url_for('feedback') }}" method="POST">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="John Doe" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="john@example.com" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="category" class="form-label">Feedback Category</label>
+                            <select class="form-control" id="category" name="category">
+                                <option value="general">General Feedback</option>
+                                <option value="bug">Report a Bug</option>
+                                <option value="suggestion">Feature Suggestion</option>
+                                <option value="scheme">Scheme Information Accuracy</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Your Message</label>
+                            <textarea class="form-control" id="message" name="message" rows="5" placeholder="Tell us what you think..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-submit">Send Feedback</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block disclaimer %}
+<b>DISCLAIMER:</b> Yojana Sarathi is an AI-powered academic project created for informational purposes only.
+Feedback is used solely for project improvement and educational assessment.
+{% endblock %}

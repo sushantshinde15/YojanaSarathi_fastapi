@@ -1,0 +1,477 @@
+{% extends "base.html" %}
+
+{% block title %}Yojana Sarathi - Eligibility Check{% endblock %}
+
+{% block nav_home %} active{% endblock %}
+
+{% block head_extra %}
+<script src="{{ url_for('static', path='js/voice.js') }}"></script>
+{% endblock %}
+
+{% block extra_css %}
+body{
+    min-height:100vh;
+    background:#FFF6E9;
+}
+
+.main-card{
+background:rgba(255,255,255,0.95);
+border-radius:14px;
+box-shadow:0 10px 30px rgba(0,0,0,0.07);
+padding:40px;
+margin-top:40px;
+}
+
+.main-heading{
+font-weight:700;
+color:#1b3b6f;
+}
+
+.sub-text{
+color:#444;
+margin-bottom:25px;
+}
+
+.section-header{
+background:linear-gradient(90deg,#1e4fa1,#5a8dd9);
+color:white;
+padding:10px 16px;
+border-radius:6px;
+font-weight:600;
+margin-bottom:15px;
+}
+
+.form-label{
+font-weight:600;
+color:#1b3b6f;
+}
+
+.box{
+border:1px solid #e3e3e3;
+border-radius:10px;
+padding:20px;
+}
+
+.scheme-btn{
+background:#1e4fa1;
+color:white;
+padding:10px 30px;
+border-radius:8px;
+border:none;
+margin:20px auto 0 auto;
+display:block;
+}
+
+.radio-row{
+display:flex;
+gap:20px;
+flex-wrap:wrap;
+}
+
+.inline-group{
+display:flex;
+gap:60px;
+}
+
+/* MOBILE FIX: keep form card and side-by-side rows readable on small screens */
+@media (max-width: 576px){
+    .main-card{
+        padding:22px;
+    }
+    .inline-group{
+        flex-direction:column;
+        gap:15px;
+    }
+}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+<div class="main-card">
+
+<h2 class="main-heading">{{ labels.title }}</h2>
+<p class="sub-text">{{ labels.subtitle }}</p>
+
+<!-- Hidden voice prompt labels read by JS -->
+<span id="vp_greet"      style="display:none">{{ labels.prompt_greet }}</span>
+<span id="vp_gender"     style="display:none">{{ labels.prompt_gender }}</span>
+<span id="vp_age"        style="display:none">{{ labels.prompt_age }}</span>
+<span id="vp_marital"    style="display:none">{{ labels.prompt_marital }}</span>
+<span id="vp_caste"      style="display:none">{{ labels.prompt_caste }}</span>
+<span id="vp_minority"   style="display:none">{{ labels.prompt_minority }}</span>
+<span id="vp_disabled"   style="display:none">{{ labels.prompt_disabled }}</span>
+<span id="vp_salary"     style="display:none">{{ labels.prompt_salary }}</span>
+<span id="vp_occupation" style="display:none">{{ labels.prompt_occupation }}</span>
+<span id="vp_residence"  style="display:none">{{ labels.prompt_residence }}</span>
+<span id="vp_finish"     style="display:none">{{ labels.prompt_finish }}</span>
+
+<form method="POST" id="schemeForm">
+    <div class="section-header">{{ labels.personal_info }}</div>
+
+    <div class="row mb-4 align-items-end">
+        <div class="col-md-4">
+            <label class="form-label">{{ labels.state }} <span class="text-danger">*</span></label>
+            <select name="state" id="state" class="form-select" required>
+                <option value="">{{ labels.select }}</option>
+                {% for s in states %}
+                <option value="{{ s }}">{{ s }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label">{{ labels.gender }} <span class="text-danger">*</span></label>
+            <select name="gender" id="gender" class="form-select" required>
+                <option value="">{{ labels.select }}</option>
+                {% for g in genders %}
+                <option value="{{ g }}">{{ g }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label">{{ labels.age }} <span class="text-danger">*</span></label>
+            <input type="number" id="age" name="age" min="1" max="100" class="form-control" required>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">{{ labels.marital_status }} <span class="text-danger">*</span></label>
+            <select name="marital_status" id="marital_status" class="form-select" required>
+                <option value="">{{ labels.select }}</option>
+                {% for m in marital_status %}
+                <option value="{{ m }}">{{ m }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box">
+                <div class="section-header">{{ labels.social_category }}</div>
+
+                <label class="form-label">{{ labels.caste }} <span class="text-danger">*</span></label>
+                <div class="radio-row mb-4">
+                    {% for c in castes %}
+                    <div>
+                        <input type="radio" name="caste" value="{{ c }}" required> {{ c }}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="inline-group">
+                    <div>
+                        <label class="form-label">{{ labels.minority }} <span class="text-danger">*</span></label><br>
+                        {% for y in yes_no %}
+                        <input type="radio" name="minority" value="{{ y }}" required> {{ y }}
+                        {% endfor %}
+                    </div>
+                    <div>
+                        <label class="form-label">{{ labels.disabled }} <span class="text-danger">*</span></label><br>
+                        {% for y in yes_no %}
+                        <input type="radio" name="disabled" value="{{ y }}" required> {{ y }}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="box">
+                <div class="section-header">{{ labels.economic_info }}</div>
+
+                <div class="mb-3">
+                    <label class="form-label">{{ labels.salary }} <span class="text-danger">*</span></label>
+                    <select name="salary" id="salary" class="form-select" required>
+                        <option value="">{{ labels.select }}</option>
+                        {% for s in salary_ranges %}
+                        <option value="{{ s }}">{{ s }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">{{ labels.occupation }} <span class="text-danger">*</span></label>
+                    <select name="occupation" id="occupation" class="form-select" required>
+                        <option value="">{{ labels.select }}</option>
+                        {% for o in occupations %}
+                        <option value="{{ o }}">{{ o }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label class="form-label">{{ labels.residence }} <span class="text-danger">*</span></label>
+                    <div>
+                        {% for r in residence_types %}
+                        <input type="radio" name="residence" value="{{ r }}" required> {{ r }}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <button type="submit" class="scheme-btn">🔍 {{ labels.submit }}</button>
+    </div>
+</form>
+
+
+</div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+/* =====================================================
+   HELPERS
+===================================================== */
+function vp(key, fallback) {
+    const el = document.getElementById("vp_" + key);
+    return el && el.textContent.trim() ? el.textContent.trim() : fallback;
+}
+
+function matchSelect(speech, selectId) {
+    if (!speech) return null;
+    const clean = speech.toLowerCase().replace(/[^a-z0-9 ]/g, "").trim();
+    const sel   = document.getElementById(selectId);
+    if (!sel) return null;
+    for (const opt of sel.options) {
+        if (!opt.value) continue;
+        const t = opt.text.toLowerCase().replace(/[^a-z0-9 ]/g, "").trim();
+        const v = opt.value.toLowerCase().replace(/[^a-z0-9 ]/g, "").trim();
+        if (clean === v || clean === t || t.includes(clean) || clean.includes(v)) return opt.value;
+    }
+    return null;
+}
+
+function matchYesNo(speech) {
+    if (!speech) return null;
+    const s   = speech.toLowerCase();
+    const yes = ["yes","yeah","yep","haan","ha","ho","ji","correct","aam","bilkul","sahi","avunu","hou"];
+    const no  = ["no","nah","nope","nahi","nako","nain","vadu","vendam","illa","nei","nee","ledu"];
+    if (yes.some(w => s.includes(w))) return "Yes";
+    if (no.some(w => s.includes(w)))  return "No";
+    return null;
+}
+
+function matchGender(speech) {
+    const s = speech.toLowerCase();
+    if (s.includes("female")||s.includes("woman")||s.includes("girl")||s.includes("महिला")||s.includes("ladki")||s.includes("aurat")) return "Female";
+    if (s.includes("male")  ||s.includes("man")  ||s.includes("boy") ||s.includes("पुरुष")||s.includes("ladka")||s.includes("aadmi"))  return "Male";
+    if (s.includes("other") ||s.includes("third") ||s.includes("transgender")) return "Other";
+    return null;
+}
+
+function matchMarital(speech) {
+    const s = speech.toLowerCase();
+    if (s.includes("widow"))   return "Widow";
+    if (s.includes("divorc"))  return "Divorced";
+    if (s.includes("unmarried")||s.includes("single")||s.includes("not married")||s.includes("bachelor")||s.includes("kumari")) return "Unmarried";
+    if (s.includes("married")  ||s.includes("vivahit")||s.includes("shadi")) return "Married";
+    return null;
+}
+
+function matchResidence(speech) {
+    const s = speech.toLowerCase();
+    if (s.includes("urban")||s.includes("city")||s.includes("town")||s.includes("shehar")||s.includes("nagar")) return "Urban";
+    if (s.includes("rural")||s.includes("village")||s.includes("gaon")||s.includes("gramin")||s.includes("gram")) return "Rural";
+    return null;
+}
+
+function matchSalaryIndex(speech) {
+    const s   = speech.toLowerCase();
+    const num = parseInt(s.replace(/[^0-9]/g, ""), 10);
+    if (s.includes("no income")||s.includes("zero")||(s.includes("no")&&s.includes("income"))) return 1;
+    if (!isNaN(num)) {
+        if (num === 0)       return 1;
+        if (num < 100000)    return 2;
+        if (num <= 250000)   return 3;
+        if (num <= 500000)   return 4;
+        return 5;
+    }
+    if (s.includes("below 1")||s.includes("less than 1 lakh")||s.includes("ek lakh se kam")) return 2;
+    if (s.includes("1 lakh") ||s.includes("one lakh"))   return 3;
+    if (s.includes("2 lakh") ||s.includes("two lakh")||s.includes("2.5")) return 3;
+    if (s.includes("5 lakh") ||s.includes("five lakh"))  return 4;
+    if (s.includes("10 lakh")||s.includes("above")||s.includes("more than 10")) return 5;
+    return null;
+}
+
+function checkRadio(name, value) {
+    const radios = document.getElementsByName(name);
+    for (const r of radios) {
+        if (r.value.toLowerCase() === value.toLowerCase()) { r.checked = true; return true; }
+    }
+    return false;
+}
+
+/* =====================================================
+   ASK WRAPPER — retries up to maxRetries then skips
+===================================================== */
+function ask(questionFn, onDone, maxRetries) {
+    if (maxRetries === undefined) maxRetries = 3;
+    let attempt = 0;
+    function run() {
+        questionFn(
+            (val) => onDone(val),
+            ()    => {
+                attempt++;
+                if (attempt >= maxRetries) {
+                    speak("Moving to the next question.", () => onDone(null));
+                } else {
+                    speak(getRepeatMessage(), () => setTimeout(run, 400));
+                }
+            }
+        );
+    }
+    run();
+}
+
+/* =====================================================
+   INDIVIDUAL QUESTIONS
+===================================================== */
+function doState(ok, retry) {
+    speak(vp("greet","Which state are you from?"), () => {
+        listen(speech => {
+            const val = matchSelect(speech, "state");
+            if (val) { document.getElementById("state").value = val; ok(val); } else retry();
+        });
+    });
+}
+
+function doGender(ok, retry) {
+    speak(vp("gender","What is your gender? Say Male, Female, or Other."), () => {
+        listen(speech => {
+            const val = matchGender(speech) || matchSelect(speech, "gender");
+            if (val) { document.getElementById("gender").value = val; ok(val); } else retry();
+        });
+    });
+}
+
+function doAge(ok, retry) {
+    speak(vp("age","How old are you? Please say your age."), () => {
+        listen(speech => {
+            let s = speech.toLowerCase();
+            const wordMap = {
+                one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10,
+                eleven:11,twelve:12,thirteen:13,fourteen:14,fifteen:15,sixteen:16,
+                seventeen:17,eighteen:18,nineteen:19,twenty:20,thirty:30,
+                forty:40,fifty:50,sixty:60,seventy:70,eighty:80,ninety:90
+            };
+            for (const [word, num] of Object.entries(wordMap)) {
+                s = s.replace(new RegExp("\\b" + word + "\\b","g"), num);
+            }
+            const nums = s.match(/\d+/);
+            const age  = nums ? parseInt(nums[0], 10) : NaN;
+            if (!isNaN(age) && age >= 1 && age <= 100) {
+                document.getElementById("age").value = age; ok(age);
+            } else retry();
+        });
+    });
+}
+
+function doMarital(ok, retry) {
+    speak(vp("marital","What is your marital status? Say Married, Unmarried, or Widow."), () => {
+        listen(speech => {
+            const val = matchMarital(speech) || matchSelect(speech, "marital_status");
+            if (val) { document.getElementById("marital_status").value = val; ok(val); } else retry();
+        });
+    });
+}
+
+function doCaste(ok, retry) {
+    speak(vp("caste","What is your caste category? Say General, OBC, SC, or ST."), () => {
+        listen(speech => {
+            const s = speech.toLowerCase();
+            let found = null;
+            if      (s.includes("general")||s.includes("open"))                         found = "General";
+            else if (s.includes("obc")||s.includes("other backward"))                   found = "OBC";
+            else if (s.includes(" sc")||s.includes("scheduled caste")||s.includes("dalit")||speech.trim().toLowerCase()==="sc") found = "Scheduled Caste (SC)";
+            else if (s.includes(" st")||s.includes("scheduled tribe")||s.includes("adivasi")||speech.trim().toLowerCase()==="st") found = "Scheduled Tribe (ST)";
+            else if (s.includes("pvtg")||s.includes("particularly vulnerable"))          found = "PVTG";
+            if (!found) {
+                for (const r of document.getElementsByName("caste")) {
+                    if (s.includes(r.value.toLowerCase())) { found = r.value; break; }
+                }
+            }
+            if (found && checkRadio("caste", found)) ok(found); else retry();
+        });
+    });
+}
+
+function doMinority(ok, retry) {
+    speak(vp("minority","Do you belong to a minority group? Say Yes or No."), () => {
+        listen(speech => {
+            const val = matchYesNo(speech);
+            if (val && checkRadio("minority", val)) ok(val); else retry();
+        });
+    });
+}
+
+function doDisability(ok, retry) {
+    speak(vp("disabled","Do you have any disability? Say Yes or No."), () => {
+        listen(speech => {
+            const val = matchYesNo(speech);
+            if (val && checkRadio("disabled", val)) ok(val); else retry();
+        });
+    });
+}
+
+function doSalary(ok, retry) {
+    speak(vp("salary","What is your annual income? Say No Income, or an amount like 1 lakh, 3 lakh."), () => {
+        listen(speech => {
+            const idx = matchSalaryIndex(speech);
+            const sel = document.getElementById("salary");
+            if (idx !== null && sel && idx < sel.options.length) {
+                sel.selectedIndex = idx; ok(idx);
+            } else retry();
+        });
+    });
+}
+
+function doOccupation(ok, retry) {
+    speak(vp("occupation","What is your occupation? For example: Student, Farmer, Self Employed, Government Employee."), () => {
+        listen(speech => {
+            const val = matchSelect(speech, "occupation");
+            if (val) { document.getElementById("occupation").value = val; ok(val); } else retry();
+        });
+    });
+}
+
+function doResidence(ok, retry) {
+    speak(vp("residence","Do you live in an Urban area like a city, or a Rural area like a village?"), () => {
+        listen(speech => {
+            const val = matchResidence(speech);
+            if (val && checkRadio("residence", val)) ok(val); else retry();
+        });
+    });
+}
+
+/* =====================================================
+   SEQUENTIAL FLOW — defined here so page2.js can call it
+===================================================== */
+function startVoiceForm() {
+    ask(doState, () =>
+    ask(doGender, () =>
+    ask(doAge, () =>
+    ask(doMarital, () =>
+    ask(doCaste, () =>
+    ask(doMinority, () =>
+    ask(doDisability, () =>
+    ask(doSalary, () =>
+    ask(doOccupation, () =>
+    ask(doResidence, () => {
+        speak(vp("finish","Thank you! Submitting your details now. Please wait."), () => {
+            document.getElementById("schemeForm").submit();
+        });
+    }))))))))));
+}
+
+/* Boot is handled by page2.js — do NOT add a window.addEventListener here */
+</script>
+<script src="{{ url_for('static', path='js/page2.js') }}"></script>
+{% endblock %}

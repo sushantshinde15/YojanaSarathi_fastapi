@@ -1,0 +1,490 @@
+scheme_id,scheme_name,category,state,min_age,max_age,gender,caste,minority,disability,marital_status,occupation,residence,min_income,max_income,income_limit_flag,description,official_url
+  
+1,Pradhan Mantri Jan Arogya Yojana (PM-JAY),Health,All,0,120,All,All,All,All,All,All,Both,0,0,NONE,Health insurance coverage up to Rs 5 lakh per family per year for poor and vulnerable families.,https://pmjay.gov.in/
+  
+2,Mahatma Gandhi National Rural Employment Guarantee Act (MGNREGA),Employment,All,18,120,All,All,All,No,All,Unemployed,Rural,0,0,NONE,Provides 100 days of guaranteed wage employment to rural households.,https://nrega.nic.in/
+  
+3,Pradhan Mantri Kisan Samman Nidhi (PM-KISAN),Agriculture,All,18,120,All,All,All,No,All,Farmer,Rural,0,0,NONE,Income support of Rs 6000 per year to eligible landholding farmer families.,https://pmkisan.gov.in/
+  
+4,Sukanya Samriddhi Yojana (SSY),Women,All,0,10,Female,All,All,No,Unmarried,All,Both,0,0,NONE,Savings scheme for girl child for education and marriage expenses.,https://www.nsiindia.gov.in/
+  
+5,Integrated Child Development Services (ICDS),Women,All,0,6,All,All,All,No,All,Other,Both,0,0,NONE,Provides nutrition preschool education and healthcare services to children under 6 years.,https://icds-wcd.nic.in/
+  
+6,Pradhan Mantri Mudra Yojana (PMMY),Employment,All,18,120,All,All,All,No,All,Entrepreneur,Both,0,0,NONE,Provides collateral-free loans to micro and small enterprises.,https://www.mudra.org.in/
+  
+7,Working Women Hostel Scheme,Women,All,18,60,Female,All,All,No,All, Private Employee,Urban,0,0,NONE,Provides safe and affordable accommodation for working women.,https://wcd.nic.in/
+  
+8,Pradhan Mantri Awas Yojana – Urban (PMAY-U),Welfare,All,18,120,All,All,All,No,All,All,Urban,0,1800000,SPECIFIC,Housing assistance for eligible urban poor households.,https://pmay-urban.gov.in/
+  
+9,Paramparagat Krishi Vikas Yojana (PKVY),Agriculture,All,18,120,All,All,All,No,All,Farmer,Rural,0,0,NONE,Promotes organic farming through cluster-based support.,https://myscheme.gov.in/
+  
+10,Stand Up India Scheme,Employment,All,18,120,All,SC/ST,All,No,All,Entrepreneur,Both,0,0,NONE,Provides bank loans to SC/ST and women entrepreneurs for greenfield enterprises.,https://www.standupmitra.in/
+  
+11,Pradhan Mantri Fasal Bima Yojana (PMFBY),Agriculture,All,18,120,All,All,All,No,All,Farmer,Rural,0,0,NONE,Crop insurance scheme providing risk coverage against crop loss.,https://pmfby.gov.in/
+  
+12,PM POSHAN (Midday Meal Scheme),Education,All,6,14,All,All,All,No,Unmarried,Student,Both,0,0,NONE,Provides free school meals to improve nutrition and attendance.,https://pmposhan.education.gov.in/
+  
+13,Pradhan Mantri Jeevan Jyoti Bima Yojana (PMJJBY),Welfare,All,18,50,All,All,All,No,All,All,Both,0,0,NONE,Low-cost government-backed life insurance scheme.,https://jansuraksha.gov.in/
+  
+14,NAMO Drone Didi Scheme,Employment,All,18,120,Female,All,All,No,All,Self-employed,Rural,0,0,NONE,Supports women SHGs with drone services for agricultural purposes.,https://dge.gov.in/
+  
+15,NAVYA (Vocational Training for Adolescent Girls),Women,All,16,18,Female,All,All,No,Unmarried,Student,Both,0,0,NONE,Skill development and empowerment program for adolescent girls.,https://dge.gov.in/
+  
+16,Palna Scheme,Women,All,0,6,All,All,All,No,All,Other,Both,0,0,NONE,Creche and day-care support for children of working mothers.,https://wcd.gov.in/offerings/palna
+  
+17,Rajiv Gandhi Scheme for Empowerment of Adolescent Girls (Sabla),Women,All,11,18,Female,All,All,No,Unmarried,Student,Both,0,0,NONE,Nutrition and life skills support for adolescent girls.,https://wcd.gov.in/
+  
+18,Beti Bachao Beti Padhao,Women,All,0,0,Female,All,All,No,All,All,Both,0,0,NONE,Initiative promoting education and empowerment of the girl child.,https://betibachao.beti.padhao.gov.in/
+  
+19,Deen Dayal Upadhyaya Grameen Kaushalya Yojana (DDU-GKY),Employment,All,18,35,All,All,All,No,All,Unemployed,Rural,0,0,NONE,Skill development and placement program for rural youth.,https://ddugky.gov.in/
+  
+20,Pradhan Mantri Matru Vandana Yojana (PMMVY),Women,All,19,50,Female,All,All,No,Married,All,Both,0,0,NONE,Maternity benefit scheme for pregnant and lactating women.,https://wcd.nic.in/schemes/pradhan-mantri-matru-vandana-yojana
+  
+21,National Means-cum-Merit Scholarship (NMMSS),Education,All,9,18,All,All,All,No,Unmarried,Student,Both,0,350000,SPECIFIC,Scholarship for meritorious students from economically weaker sections.,https://scholarships.gov.in/
+  
+22,Kisan Credit Card (KCC) Scheme,Agriculture,All,18,120,All,All,All,No,All,Farmer,Rural,0,0,NONE,Provides farmers with timely credit for agricultural needs.,https://kcc.gov.in/
+  
+23,Rashtriya Vayoshri Yojana,Pension,All,60,120,All,All,All,No,All,Unemployed,Both,0,200000,SPECIFIC,Provides assistive devices to senior citizens from low-income groups.,https://www.alimco.in/
+  
+24,National Livestock Mission,Agriculture,All,18,120,All,All,All,No,All,Farmer,Rural,0,0,NONE,Improves livestock productivity and breeding support.,https://nhb.gov.in/
+  
+25,Pradhan Mantri Kaushal Vikas Yojana (PMKVY),Employment,All,18,35,All,All,All,No,All,Unemployed,Both,0,0,NONE,Skill certification training to enhance youth employability.,https://pmkvyofficial.org/
+  
+26,Aarogya Lakshmi Scheme,Health,Telangana,0,120,Female,All,All,No,All,All,Both,0,0,NONE,Nutritional support program for pregnant/lactating women and children.,https://wcd.tg.gov.in/
+  
+27,National Rural Livelihoods Mission (DAY-NRLM),Employment,All,18,120,All,All,All,No,All,Self-employed,Rural,0,0,NONE,Poverty reduction through self-help groups and livelihood support.,https://nsrapl.gov.in/
+  
+28,National Scheme for Incentive to Girls for Secondary Education,Women,All,14,18,Female,SC/ST,All,No,Unmarried,Student,Both,0,150000,SPECIFIC,Financial incentive for SC/ST girls to continue secondary education.,https://scholarships.gov.in/
+  
+29,Pradhan Mantri Gramin Digital Saksharta Abhiyan (PMGDISHA),Education,All,14,120,All,All,All,No,All,All,Rural,0,0,NONE,Digital literacy training program for rural citizens.,https://www.pmgdisha.in/
+  
+30,Chief Minister Yuva Swavalamban Yojana,Education,Gujarat,18,25,All,All,All,No,Unmarried,Student,Both,0,600000,SPECIFIC,Tuition fee assistance for economically weaker students in Gujarat.,https://mysy.guj.nic.in/
+  
+31,Pradhan Mantri Surya Ghar Muft Bijli Yojana,Welfare,All,18,120,All,All,All,No,All,Other,Both,0,0,NONE,Subsidy for rooftop solar installations for residential households.,https://pmsuryaghar.gov.in/
+  
+32,Prime Minister Internship Scheme (PMIS),Education,All,21,24,All,All,All,No,Unmarried,Student,Both,0,0,NONE,Paid internship opportunities for youth in leading companies.,https://pminternship.mca.gov.in/
+  
+33,Rashtriya Gokul Mission,Agriculture,All,18,120,All,All,All,No,All,Farmer,Rural,0,0,NONE,Conservation and development of indigenous cattle breeds.,https://dahd.nic.in/
+  
+34,Interest Subvention Scheme for Farmers,Agriculture,All,18,120,All,All,All,No,All,Farmer,Rural,0,300000,SPECIFIC,Provides interest subsidy on short-term crop loans.,https://agricoop.nic.in/
+  
+35,PM eVIDYA,Education,All,3,18,All,All,All,No,Unmarried,Student,Both,0,0,NONE,Unified digital education access program for school students.,https://www.india.gov.in/
+  
+36,PM SVANidhi,Employment,All,18,65,All,All,All,No,All,Self-employed,Urban,0,0,NONE,Collateral-free micro-loans for street vendors.,https://pmsvanidhi.mohua.gov.in/
+  
+37,Pradhan Mantri Shram Yogi Maandhan (PM-SYM),Welfare,All,18,40,All,All,All,No,All,Unemployed,Both,0,0,NONE,Pension scheme for unorganised sector workers.,https://maandhan.in/
+  
+38,PM-Ujjwala Yojana,Welfare,All,18,120,Female,All,All,No,Married,All,Both,0,0,NONE,Free LPG connections for women from low-income households.,https://pmuy.gov.in/
+  
+39,Credit Guarantee Fund Trust for Micro and Small Enterprises (CGTMSE),Employment,All,18,120,All,All,All,No,All,Entrepreneur,Both,0,0,NONE,Credit guarantee support for micro and small enterprises.,https://www.cgtmse.in/
+  
+40,Start-up India Scheme,Employment,All,18,120,All,All,All,No,All,Entrepreneur,Both,0,0,NONE,Supports startups through funding tax benefits and compliance ease.,https://www.startupindia.gov.in/
+  
+41,PM Kisan Maandhan Yojana,Agriculture,All,18,40,All,All,All,No,All,Farmer,Both,0,0,NONE,Pension scheme for small and marginal farmers.,https://pmkisan.gov.in/
+  
+42,Central Sector Scholarship for College and University Students,Education,All,18,25,All,All,All,No,Unmarried,Student,Both,0,250000,SPECIFIC,Financial assistance to economically weaker students in higher education.,https://scholarships.gov.in/
+  
+43,Prime Minister Employment Generation Programme (PMEGP),Employment,All,18,120,All,All,All,No,All,Entrepreneur,Both,0,0,NONE,Credit-linked subsidy scheme for setting up micro enterprises.,https://kviconline.gov.in/
+  
+44,Atmanirbhar Bharat Rojgar Yojana (ABRY),Employment,All,18,60,All,All,All,No,All, Private Employee,Both,0,0,NONE,Incentives to employers for hiring new employees.,https://myscheme.gov.in/
+  
+45,Pradhan Mantri Suraksha Bima Yojana (PMSBY),Welfare,All,18,70,All,All,All,No,All,All,Both,0,0,NONE,Low-cost accidental insurance scheme.,https://jansuraksha.gov.in/
+  
+46,Bhartiya Uday Skill Development Yojana,Employment,All,16,35,All,All,All,No,All,Unemployed,Both,0,0,NONE,Vocational training and skill development program for youth.,https://www.india.gov.in/
+  
+47,Pradhan Mantri Vishwakarma Yojana,Employment,All,18,120,All,All,All,No,All,Self-employed,Both,0,0,NONE,Support scheme for traditional artisans and craftspeople.,https://myscheme.gov.in/
+  
+48,National Fellowship for Scheduled Caste Students,Education,All,18,40,All,SC,All,No,All,Student,Both,0,800000,SPECIFIC,Fellowship support for SC students pursuing higher education.,https://scholarships.gov.in/
+  
+49,Pradhan Mantri Matsya Sampada Yojana (PMMSY),Agriculture,All,18,120,All,All,All,No,All,Other,Both,0,0,NONE,Development and support scheme for fisheries sector.,https://pmmsy.dof.gov.in/
+  
+50,National Scholarship for Persons with Disabilities,Education,All,14,35,All,All,All,Yes,Unmarried,Student,Both,0,300000,SPECIFIC,Scholarship support for students with benchmark disabilities.,https://scholarships.gov.in/
+  
+51,Mahatma Jyotirao Phule Jan Arogya Yojana,Health,Maharashtra,0,120,All,All,All,No,All,All,Both,0,0,NONE,State health insurance scheme for eligible families in Maharashtra.,https://www.jeevandayee.gov.in/
+  
+52,National Fellowship for Other Backward Classes (NFOBC),Education,All,18,40,All,OBC,All,No,All,Student,Both,0,800000,SPECIFIC,Fellowship support for OBC postgraduate students.,https://scholarships.gov.in/
+  
+53,Reimbursement of Tuition Fees for Backward Class Students,Education,Maharashtra,17,30,All,SC/OBC,All,No,Unmarried,Student,Both,0,250000,SPECIFIC,Reimbursement of tuition and examination fees for backward class students.,https://socialwelfare.maharashtra.gov.in/
+  
+54,Ramai Awas Yojana,Welfare,Maharashtra,18,120,All,SC,All,No,All,All,Both,0,300000,SPECIFIC,Housing scheme for SC and Neo-Buddhist families in Maharashtra.,https://sjsa.maharashtra.gov.in/
+  
+55,Pre-Matric Scholarship for Children of Parents in Unclean Occupations,Education,Maharashtra,5,17,All,All,All,No,Unmarried,Student,Both,0,0,NONE,Scholarship for children of parents engaged in specified occupations.,https://socialwelfare.maharashtra.gov.in/
+  
+56,Pre-Matric Scholarship for Scheduled Caste Students,Education,Maharashtra,5,17,All,SC,All,No,Unmarried,Student,Both,0,0,NONE,Scholarship support for SC students up to Class 10.,https://socialwelfare.maharashtra.gov.in/
+  
+57,Top Class Education Scheme for SC Students,Education,All,17,30,All,SC,All,No,Unmarried,Student,Both,0,800000,SPECIFIC,Full financial support for meritorious SC students in premier institutions.,https://socialjustice.gov.in/
+  
+58,Support to Training and Employment Programme for Women (STEP),Women,All,18,50,Female,All,All,No,All,Unemployed,Rural,0,0,NONE,Skill training and employment support for women.,https://wcd.nic.in/schemes/step/
+  
+59,State Food & Basic Needs Assistance,Welfare,State,0,120,All,All,All,No,All,Unemployed,Both,0,0,NONE,Subsidized food & essentials support for daily wage families.,https://state.gov.in/
+
+60,Babu Jagjivan Ram Hostel Scheme,Education,Maharashtra,5,25,All,All,All,No,Unmarried,Student,Both,0,0,NONE,Provides hostel accommodation assistance for students.,https://socialwelfare.maharashtra.gov.in/
+  
+61,Rashtriya Krishi Vikas Yojana (RKVY),Agriculture,All,18,120,All,All,All,No,All,Farmer,Both,0,0,NONE,Supports holistic development of agriculture and allied sectors.,https://rkvy.nic.in/
+  
+62,National Overseas Scholarship for SC Students,Education,All,18,35,All,SC,All,No,All,Student,Both,0,800000,SPECIFIC,Financial assistance for SC students pursuing higher education abroad.,https://socialjustice.gov.in/
+  
+63,Soil Health Card Scheme,Agriculture,All,18,120,All,All,All,No,All,Farmer,Rural,0,0,NONE,Provides soil nutrient analysis and recommendations for farmers.,https://myscheme.gov.in/
+  
+64,Mukhyamantri Vayoshri Yojana,Health,Maharashtra,65,120,All,All,All,No,All,Unemployed,Both,0,0,NONE,Health and assistive support scheme for senior citizens.,https://thane.nic.in/
+  
+65,Punyashlok Ahilyadevi Holkar Mahila Startup Scheme,Employment,Maharashtra,18,120,Female,All,All,No,All,Entrepreneur,Both,0,0,NONE,Startup funding and mentorship support for women entrepreneurs.,https://jalgaon.gov.in/
+  
+66,Mukhyamantri Yuva Karya Prashikshan Yojana,Employment,Maharashtra,18,35,All,All,All,No,All,Unemployed,Both,0,0,NONE,Skill training and employment program for youth.,https://jalgaon.gov.in/
+  
+67,Atal Pension Yojana (APY),Pension,All,18,40,All,All,All,No,All,Unemployed,Both,0,0,NONE,Voluntary pension scheme for unorganised sector workers.,https://www.npscra.nsdl.co.in/
+  
+68,Mukhyamantri Rajshri Yojana,Women,Rajasthan,0,18,Female,All,All,No,Unmarried,All,Both,0,0,NONE,Financial assistance scheme for girl child welfare.,https://wcd.rajasthan.gov.in/
+  
+69,National Mission on Edible Oils – Oil Palm (NMEO-OP),Agriculture,All,18,120,All,All,All,No,All,Farmer,Both,0,0,NONE,Promotes oil palm cultivation and edible oil production.,https://myscheme.gov.in/
+  
+70,Deendayal Disabled Rehabilitation Scheme (DDRS),Health,All,0,120,All,All,All,Yes,All,All,Both,0,0,NONE,Supports rehabilitation and empowerment of persons with disabilities.,https://disabilityaffairs.gov.in/
+  
+71,Divyangjan Skill Development Scheme,Employment,All,18,45,All,All,All,Yes,All,Unemployed,Both,0,0,NONE,Skill training program for persons with disabilities.,https://disabilityaffairs.gov.in/
+  
+72,Pradhan Mantri Formalisation of Micro Food Processing Enterprises (PMFME),Employment,All,18,120,All,All,All,No,All,Entrepreneur,Both,0,0,NONE,Credit-linked subsidy for micro food processing enterprises.,https://pmfme.mofpi.gov.in/
+  
+73,Deendayal Antyodaya Yojana – National Urban Livelihoods Mission (DAY-NULM),Employment,All,18,60,All,All,All,No,All,Unemployed,Urban,0,0,NONE,Skill training and self-employment support for urban poor.,https://nulm.gov.in/
+  
+74,PM CARES for Children Scheme,Welfare,All,0,23,All,All,All,No,Unmarried,Student,Both,0,0,NONE,Support scheme for children orphaned due to COVID-19.,https://pmcaresforchildren.in/
+  
+75,Mukhyamantri Majhi Ladki Bahin Yojana,Women,Maharashtra,21,65,Female,All,All,No,All,All,Both,0,250000,SPECIFIC,Financial assistance scheme providing monthly support to eligible women beneficiaries in Maharashtra.,https://womenchild.maharashtra.gov.in/
+  
+76,Bal Sangopan Yojana,Women,Maharashtra,0,18,All,All,All,No,All,Student,Both,0,100000,SPECIFIC,Financial assistance for orphan and vulnerable children for their upbringing and education.,https://womenchild.maharashtra.gov.in/
+  
+77,San Jay Gandhi Niradhar Anudan Yojana,Welfare,Maharashtra,0,65,All,All,All,Yes,All,Unemployed,Both,0,21000,SPECIFIC,Pension scheme for destitute persons widows and disabled citizens.,https://sjsa.maharashtra.gov.in/
+  
+78,Indira Gandhi National Old Age Pension Scheme (State Top-Up),Pension,Maharashtra,60,120,All,All,All,No,All,Unemployed,Both,0,21000,SPECIFIC,State-supported pension assistance for elderly citizens under national pension framework.,https://sjsa.maharashtra.gov.in/
+  
+79,Shravan Bal Seva Rajya Nivrutti Vetan Yojana,Pension,Maharashtra,65,120,All,All,All,No,All,Unemployed,Both,0,21000,SPECIFIC,Financial pension support scheme for senior citizens in Maharashtra.,https://sjsa.maharashtra.gov.in/
+  
+80,Mahatma Phule Karj Mukti Yojana,Agriculture,Maharashtra,18,120,All,All,All,No,All,Farmer,Rural,0,0,NONE,Farm loan waiver scheme for eligible farmers in Maharashtra.,https://maharashtra.gov.in/
+  
+81,Dr Babasaheb Ambedkar Swadhar Yojana,Education,Maharashtra,18,30,All,SC/OBC,All,No,Unmarried,Student,Both,0,250000,SPECIFIC,Financial support for SC and Neo-Buddhist students for higher education expenses.,https://socialjustice.maharashtra.gov.in/
+  
+82,Annasaheb Patil Arthik Vikas Mahamandal Loan Scheme,Employment,Maharashtra,18,50,All,Maratha,All,No,All,Entrepreneur,Both,0,800000,SPECIFIC,Financial assistance and subsidized loans for Maratha community entrepreneurs.,https://ampvmaha.in/
+  
+83,Shabari Adivasi Gharkul Yojana,Welfare,Maharashtra,18,120,All,ST,All,No,All,All,Rural,0,300000,SPECIFIC,Housing assistance scheme for Scheduled Tribe families in rural areas.,https://tribal.maharashtra.gov.in/
+  
+84,Birsa Munda Krishi Kranti Yojana,Agriculture,Maharashtra,18,120,All,ST,All,No,All,Farmer,Rural,0,0,NONE,Agricultural support scheme for tribal farmers including irrigation and farm inputs.,https://tribal.maharashtra.gov.in/
+  
+85,AP Capital Region Development Scheme,Welfare,Andhra Pradesh,18,120,All,All,All,No,All,All,Both,0,0,NONE,Urban and rural infrastructure development initiative.,https://crda.ap.gov.in/
+  
+86,Mukhyamantri Yuva Nestam,Employment,Andhra Pradesh,18,40,All,All,All,No,All,Unemployed,Both,0,0,NONE,Financial assistance and livelihood support for unemployed youth.,https://navasakam.ap.gov.in/
+  
+87,YSR Rythu Bharosa,Agriculture,Andhra Pradesh,18,75,All,All,All,No,All,Farmer,Rural,0,0,NONE,Annual financial support to farmers for agricultural needs.,https://rythubharosa.ap.gov.in/
+  
+88,YSR Cheyutha,Women,Andhra Pradesh,45,60,Female,All,All,No,All,All,Both,0,0,NONE,Financial support for women belonging to weaker sections.,https://navasakam.ap.gov.in/
+  
+89,YSR Aarogyasri Health Care Trust,Health,Andhra Pradesh,0,120,All,All,All,No,All,All,Both,0,0,NONE,Provides health insurance coverage for eligible families.,https://aarogyasri.ap.gov.in/
+  
+90,AP Free Laptop Scheme,Education,Andhra Pradesh,16,25,All,All,All,No,Unmarried,Student,Both,0,0,NONE,Distribution of free laptops to eligible students.,https://navasakam.ap.gov.in/
+  
+91,YSR Jala Kala,Welfare,Andhra Pradesh,18,120,All,All,All,No,All,Farmer,Rural,0,0,NONE,Irrigation and water resource development support for farmers.,https://rythubharosa.ap.gov.in/
+  
+92,AP Chief Minister Arogya Asara,Health,Andhra Pradesh,0,120,All,All,All,No,All,All,Both,0,0,NONE,Health insurance and treatment support for serious illnesses.,https://navasakam.ap.gov.in/
+  
+93,YSR Kapu Nestham,Women,Andhra Pradesh,30,60,Female,Kapu,All,No,All,All,Both,0,0,NONE,Financial support scheme specifically for women from Kapu community.,https://navasakam.ap.gov.in/
+  
+94,AP Vasathi Deevena,Education,Andhra Pradesh,5,25,All,All,All,No,Unmarried,Student,Both,0,0,NONE,Tuition fee reimbursement for students from low-income families.,https://navasakam.ap.gov.in/
+  
+95,YSR Sunna Vaddi Panta Runalu,Agriculture,Andhra Pradesh,18,120,All,All,All,No,All,Farmer,Rural,0,0,NONE,Zero interest crop loans support for farmers.,https://rythubharosa.ap.gov.in/
+  
+96,AP Jagananna Gorumudda Scheme,Welfare,Andhra Pradesh,0,120,All,All,All,No,All,All,Both,0,0,NONE,Provides subsidized quality meals for households.,https://navasakam.ap.gov.in/
+  
+97,Umeed Scheme,Welfare,Jammu & Kashmir,18,60,Female,All,All,No,All,Self-employed,Both,0,0,NONE,Self‑help group and livelihood support programme empowering women through training entrepreneurship support and micro‑enterprise opportunities under J&K Rural Livelihood Mission.,https://jkrlm.nic.in/
+  
+98,YSR Navasakam  Amma Vodi,Education,Andhra Pradesh,5,18,All,All,All,No,Unmarried,Student,Both,0,0,NONE,Financial support to mothers for children’s education attendance.,https://navasakam.ap.gov.in/
+  
+99,YSR Cheyutha Family Support,Welfare,Andhra Pradesh,18,65,All,All,All,No,All,All,Both,0,0,NONE,Family pension and support to vulnerable sections.,https://navasakam.ap.gov.in/
+  
+100,Jagananna Thodu – Micro Credit Support,Employment,Andhra Pradesh,18,60,All,All,All,No,All,Self-employed,Both,0,0,NONE,Micro credit and economic support for small traders and vendors.,https://navasakam.ap.gov.in/
+  
+101,Mukhyamantri Kanya Sumangala Yojana,Women,Uttar Pradesh,0,18,Female,All,All,No,Unmarried,Student,Both,0,300000,SPECIFIC,Financial assistance scheme for girl child education and welfare in Uttar Pradesh.,https://mksy.up.gov.in/
+  
+102,Mukhyamantri Samuhik Vivah Yojana,Women,Uttar Pradesh,18,60,All,All,All,No,Married,All,Both,0,200000,SPECIFIC,Financial assistance for marriage of economically weaker couples.,https://shadianudan.upsdc.gov.in/
+  
+103,Mukhyamantri Yuva Swarozgar Yojana,Employment,Uttar Pradesh,18,40,All,All,All,No,All,Entrepreneur,Both,0,0,NONE,Self-employment scheme providing financial assistance to youth for setting up enterprises.,https://diupmsme.upsdc.gov.in/
+  
+104,Mukhyamantri Krishak Durghatna Kalyan Yojana,Agriculture,Uttar Pradesh,18,70,All,All,All,No,All,Farmer,Rural,0,0,NONE,Financial compensation scheme for farmers in case of accidental death or disability.,https://upagripardarshi.gov.in/
+  
+105,Uttar Pradesh Free Laptop/Tablet Scheme,Education,Uttar Pradesh,16,25,All,All,All,No,Unmarried,Student,Both,0,0,NONE,Distribution of free tablets and laptops to meritorious students.,https://up.gov.in/
+  
+106,Mukhyamantri Awas Yojana (UP),Welfare,Uttar Pradesh,18,120,All,All,All,No,All,All,Both,0,300000,SPECIFIC,Housing assistance scheme for economically weaker sections in Uttar Pradesh.,https://awas.up.nic.in/
+  
+107,Mukhyamantri Bal Seva Yojana,Welfare,Uttar Pradesh,0,23,All,All,All,No,Unmarried,Student,Both,0,0,NONE,Support scheme for orphaned children including financial and educational assistance.,https://balseva.up.gov.in/
+  
+108,Mukhyamantri Kisan Evam Sarvhit Bima Yojana,Agriculture,Uttar Pradesh,18,70,All,All,All,No,All,Farmer,Rural,0,0,NONE,Insurance coverage scheme for farmers and low-income families.,https://up.gov.in/
+  
+109,Uttar Pradesh Rani Lakshmi Bai Mahila Samman Kosh,Women,Uttar Pradesh,18,60,Female,All,All,No,All,All,Both,0,0,NONE,Financial support and rehabilitation assistance for distressed women.,https://mahila.up.gov.in/
+  
+110,Mukhyamantri Shikshuta Protsahan Yojana,Education,Uttar Pradesh,18,35,All,All,All,No,Unmarried,Student,Both,0,0,NONE,Apprenticeship promotion scheme providing stipend support to youth.,https://sewayojan.up.nic.in/
+  
+111,Mukhyamantri Gramodyog Rojgar Yojana,Employment,Uttar Pradesh,18,45,All,All,All,No,All,Entrepreneur,Rural,0,0,NONE,Financial assistance scheme to promote rural industries and self-employment.,https://upkvib.gov.in/
+  
+112,Mukhyamantri Divyang Pension Yojana,Pension,Uttar Pradesh,18,120,All,All,All,Yes,All,Unemployed,Both,0,46080,SPECIFIC,Pension scheme providing financial assistance to persons with disabilities.,https://sspy-up.gov.in/
+  
+113,Mukhyamantri Vridhjan Pension Yojana,Pension,Uttar Pradesh,60,120,All,All,All,No,All,Unemployed,Both,0,46080,SPECIFIC,Old age pension scheme for elderly citizens in Uttar Pradesh.,https://sspy-up.gov.in/
+  
+114,Mukhyamantri Nirashrit Mahila Pension Yojana,Welfare,Uttar Pradesh,18,60,Female,All,All,No,Widowed,Unemployed,Both,0,46080,SPECIFIC,Pension support scheme for destitute and widowed women.,https://sspy-up.gov.in/
+  
+115,Mukhyamantri Abhyudaya Yojana,Education,Uttar Pradesh,16,35,All,All,All,No,Unmarried,Student,Both,0,0,NONE,Free coaching support scheme for competitive examinations.,https://abhyuday.up.gov.in/
+  
+116,Mukhyamantri Kanya Abhibhavak Samman Yojana,Women,Madhya Pradesh,0,18,Female,All,All,No,Unmarried,Student,Both,0,200000,SPECIFIC,Financial incentive scheme for girls to support education and welfare.,https://mpsubsidy.mp.gov.in/
+  
+117,Chief Minister Urban Slum Development Yojana,Welfare,Madhya Pradesh,0,120,All,All,All,No,All,All,Urban,0,0,NONE,Infrastructure and support services for slum dwellers in urban areas.,https://urban.mp.gov.in/
+  
+118,Mukhyamantri Yuva Swavalamban Yojana,Employment,Madhya Pradesh,18,40,All,All,All,No,All,Entrepreneur,Both,0,0,NONE,Youth self-employment support scheme via subsidized assistance.,https://mpskills.mp.gov.in/
+  
+119,Chief Minister Khedut Samman Yojana,Agriculture,Madhya Pradesh,18,75,All,All,All,No,All,Farmer,Rural,0,0,NONE,Annual financial support to farmers for crop and farming activities.,https://agriculture.mp.gov.in/
+  
+120,Mukhyamantri Gramin Awas Yojana,Welfare,Madhya Pradesh,18,120,All,All,All,No,All,All,Rural,0,300000,SPECIFIC,Housing assistance scheme for rural poor households.,https://mp.gov.in/
+  
+121,Mukhyamantri Jan Arogya Yojana,Health,Madhya Pradesh,0,120,All,All,All,No,All,All,Both,0,0,NONE,Health care assistance and medical support scheme for eligible families.,https://mphealth.gov.in/
+  
+122,Chief Minister Skill Development Scheme,Education,Madhya Pradesh,18,35,All,All,All,No,All,Unemployed,Both,0,0,NONE,Vocational training and skill training support for youth.,https://mpskills.mp.gov.in/
+  
+123,Madhya Pradesh Free Laptops to Students,Education,Madhya Pradesh,16,25,All,All,All,No,Unmarried,Student,Both,0,0,NONE,Distribution of free laptops to meritorious and needy students.,https://mpsubsidy.mp.gov.in/
+  
+124,Mukhyamantri Shiksha Protsahan Yojana,Education,Madhya Pradesh,5,18,All,All,All,No,Unmarried,Student,Both,0,100000,SPECIFIC,Financial scholarship support for school students.,https://mpsubsidy.mp.gov.in/
+  
+125,Mukhyamantri Vridhjan Samman Pension Yojana,Pension,Madhya Pradesh,60,120,All,All,All,No,All,Unemployed,Both,0,54000,SPECIFIC,Pension support scheme for senior citizens.,https://socialsecurity.mp.gov.in/
+  
+126,Mukhyamantri Awas Plus Yojana,Welfare,Madhya Pradesh,18,120,All,All,All,No,All,All,Both,0,500000,SPECIFIC,Enhanced housing assistance for economically weaker families.,https://mpsubsidy.mp.gov.in/
+  
+127,Chief Minister Tribal Upliftment Yojana,Welfare,Madhya Pradesh,0,120,All,ST,All,No,All,All,Both,0,0,NONE,Welfare support program for tribal communities.,https://tribal.mp.gov.in/
+  
+128,Mukhyamantri Kisan Samriddhi Yojana,Agriculture,Madhya Pradesh,18,120,All,All,All,No,All,Farmer,Rural,0,0,NONE,Support scheme for agricultural development and productivity enhancement.,https://agriculture.mp.gov.in/
+  
+129,Chief Minister Skill Loan Subsidy Yojana,Education,Madhya Pradesh,18,40,All,All,All,No,All,Student,Both,0,600000,SPECIFIC,Interest subsidy scheme for students taking skill-based loans.,https://mpskills.mp.gov.in/
+  
+130,Mahila Utkarsh Yojana,Women,Madhya Pradesh,18,60,Female,All,All,No,All,Self-employed,Both,0,0,NONE,Skill development and employment support for women.,https://mahila.mp.gov.in/
+  
+131,Mukhyamantri Kanya Utthan Yojana,Women,Bihar,0,18,Female,All,All,No,Unmarried,Student,Both,0,300000,SPECIFIC,Financial assistance and scholarship for girl child education.,https://state.bihar.gov.in/
+  
+132,Bihar Student Credit Card (BSCC) Scheme,Education,Bihar,18,25,All,All,All,No,Unmarried,Student,Both,0,450000,SPECIFIC,Interest-free education loans up to specified limits for students.,https://education.bihar.gov.in/
+  
+133,Mukhyamantri Gramin Awas Yojana,Welfare,Bihar,18,120,All,All,All,No,All,All,Rural,0,300000,SPECIFIC,Housing assistance for eligible rural households.,https://urban.bihar.gov.in/
+  
+134,Bihar Free Laptop Scheme,Education,Bihar,16,25,All,All,All,No,Unmarried,Student,Both,0,0,NONE,Free laptop distribution to meritorious students.,https://state.bihar.gov.in/
+  
+135,Mukhyamantri Balak/Balika Protsahan Yojana,Education,Bihar,5,18,All,All,All,No,Unmarried,Student,Both,0,100000,SPECIFIC,Scholarship incentive for students to improve retention.,https://education.bihar.gov.in/
+  
+136,Bihar Shramik Awas Yojana,Welfare,Bihar,18,65,All,All,All,No,All, Private Employee,Both,0,0,NONE,Housing support scheme for registered laborers.,https://labour.bihar.gov.in/
+  
+137,Bihar Chief Minister Khetihar Sahayata Yojana,Agriculture,Bihar,18,75,All,All,All,No,All,Farmer,Rural,0,0,NONE,Financial assistance and input support for farmers.,https://agriculture.bihar.gov.in/
+  
+138,Mukhyamantri Vriddhajan Pension Yojana,Pension,Bihar,60,120,All,All,All,No,All,Unemployed,Both,0,36000,SPECIFIC,Pension support for senior citizens.,https://socialwelfare.bihar.gov.in/
+  
+139,Mukhyamantri Nischay Swayam Sahayata Bhatta Yojana,Welfare,Bihar,18,60,All,All,All,No,All,Unemployed,Both,0,0,NONE,Unemployment financial support for youth.,https://state.bihar.gov.in/
+  
+140,Bihar Minority Scholarship Scheme,Education,Bihar,5,30,All,All,Yes,No,Unmarried,Student,Both,0,200000,SPECIFIC,Scholarship support for minority community students.,https://minoritywelfare.bihar.gov.in/
+  
+141,Bihar Energy Subsidy Scheme,Welfare,Bihar,18,120,All,All,All,No,All,All,Both,0,0,NONE,Electricity bill rebate and energy subsidy for households.,https://energy.bihar.gov.in/
+  
+142,Bihar Kisan Credit Card (KCC) Scheme,Agriculture,Bihar,18,120,All,All,All,No,All,Farmer,Rural,0,0,NONE,Timely credit support for farmers with flexible repayment options.,https://agriculture.bihar.gov.in/
+  
+143,Mukhyamantri Mahila Samman Nidhi,Women,Bihar,18,60,Female,All,All,No,All,Self-employed,Both,0,0,NONE,Financial assistance and empowerment program for women.,https://state.bihar.gov.in/
+  
+144,Bihar Skill Development Mission,Employment,Bihar,18,45,All,All,All,No,All,Unemployed,Both,0,0,NONE,Skill training and employability support for youth.,https://labour.bihar.gov.in/
+  
+145,Bihar Chief Minister Agricultural Infrastructure Scheme,Agriculture,Bihar,18,120,All,All,All,No,All,Farmer,Rural,0,0,NONE,Support scheme for Agri infrastructure and storage.,https://agriculture.bihar.gov.in/
+  
+146,Naan Mudhalvan Quality Education Programme,Education,Tamil Nadu,14,25,All,All,All,No,Unmarried,Student,Both,0,0,NONE,Career guidance and mentoring support for higher education and career planning.,https://naanmudhalvan.tn.gov.in/
+  
+147,Amma Two Wheeler Scheme,Welfare,Tamil Nadu,18,45,All,All,All,No,All, Private Employee,Both,0,0,NONE,Subsidy support for two-wheeler purchase to women beneficiaries.,https://ammascheme.tn.gov.in/
+  
+148,Chief Ministers Breakfast Scheme,Health,Tamil Nadu,6,14,All,All,All,No,Unmarried,Student,Both,0,0,NONE,Provides nutritious breakfast to school children to improve health and attendance.,https://schoolmeals.tn.gov.in/
+  
+149,Tamil Nadu Free Laptop Scheme,Education,Tamil Nadu,16,25,All,All,All,No,Unmarried,Student,Both,0,0,NONE,Distribution of free laptops to eligible students.,https://tn.gov.in/
+  
+150,Amma Unavagam (Subsidised Canteen) Scheme,Welfare,Tamil Nadu,0,120,All,All,All,No,All,All,Both,0,0,NONE,Provides subsidized meals to low-income families at affordable rates.,https://tn.gov.in/
+  
+151,Chief Ministers Solar Powered Green House Scheme,Welfare,Tamil Nadu,18,120,All,All,All,No,All,All,Both,0,0,NONE,Subsidy support for solar power installations on residential houses.,https://tnenergy.tn.gov.in/
+  
+152,Mukhyamantri Free Bus Pass for Senior Citizens,Welfare,Tamil Nadu,60,120,All,All,All,No,All,Unemployed,Both,0,0,NONE,Free travel facility for senior citizens on state transport buses.,https://tn.gov.in/
+  
+153,Tamil Nadu Chief Minister Public Distribution System (CM-PDS),Welfare,Tamil Nadu,0,120,All,All,All,No,All,All,Both,0,0,NONE,Food security and subsidized ration distribution for eligible families.,https://tn.gov.in/
+  
+154,Kerala Women’s Empowerment Initiative,Women,Kerala,18,60,Female,All,All,No,All,All,Both,0,0,NONE,Skill training and financial support for women.,https://women.kerala.gov.in/
+  
+155,Tamil Nadu Start-up and Innovation Scheme,Employment,Tamil Nadu,18,40,All,All,All,No,All,Entrepreneur,Both,0,0,NONE,Support for innovative start-ups including funding and mentoring.,https://tnstartups.tn.gov.in/
+  
+156,Chief Minister Rice Subsidy Scheme,Agriculture,Tamil Nadu,18,120,All,All,All,No,All,Farmer,Rural,0,0,NONE,Subsidized rice support to eligible farming families.,https://tn.gov.in/
+  
+157,Amma Play Scheme,Women,Tamil Nadu,0,10,Female,All,All,No,All,Other,Both,0,0,NONE,Free play and recreational centers for children in urban areas.,https://tn.gov.in/
+  
+158,Tamil Nadu Assistance Scheme for Differently Abled,Health,Tamil Nadu,0,120,All,All,All,Yes,All,All,Both,0,0,NONE,Support and rehabilitation assistance for persons with disabilities.,https://tn.gov.in/
+  
+159,Tamil Nadu Chief Minister Grow More Food Programme,Agriculture,Tamil Nadu,18,120,All,All,All,No,All,Farmer,Rural,0,0,NONE,Agri support scheme promoting high yield crop practices.,https://tn.gov.in/
+  
+160,TN Chief Minister Back to School Programme,Education,Tamil Nadu,5,18,All,All,All,No,Unmarried,Student,Both,0,0,NONE,Encourages school re-enrolment and attendance for children.,https://tn.gov.in/
+  
+161,Tamil Nadu Urban Housing Assistance Scheme,Welfare,Tamil Nadu,18,120,All,All,All,No,All,All,Urban,0,300000,SPECIFIC,Housing support for eligible urban poor families.,https://tn.gov.in/
+  
+162,Nava Karnataka Nidhi Scholarship,Education,Karnataka,5,25,All,All,All,No,Unmarried,Student,Both,0,200000,SPECIFIC,Provides scholarships to students from economically weaker sections.,https://schooledu.karnataka.gov.in/
+  
+163,Mukhyamantri Yuva Co-operative Credit Card Scheme,Welfare,Karnataka,18,40,All,All,All,No,All,Entrepreneur,Both,0,0,NONE,Credit card support for youth entrepreneurs.,https://karnataka.gov.in/
+  
+164,Karnataka Gruha Lakshmi Scheme,Welfare,Karnataka,18,60,Female,All,All,No,All,Unemployed,Both,0,0,NONE,Monthly financial assistance to women heads of households.,https://kswd.karnataka.gov.in/
+  
+165,Anna Bhagya Scheme,Welfare,Karnataka,0,120,All,All,All,No,All,All,Both,0,0,NONE,Subsidized rice and food provisions for eligible families.,https://food.karnataka.gov.in/
+  
+166,Karnataka Chief Minister Rice Bowl Scheme,Agriculture,Karnataka,18,120,All,All,All,No,All,Farmer,Rural,0,0,NONE,Agricultural subsidy scheme to improve crop productivity.,https://agri.karnataka.gov.in/
+  
+167,Karnataka Free Laptop Scheme,Education,Karnataka,16,25,All,All,All,No,Unmarried,Student,Both,0,0,NONE,Distribution of free laptops to eligible students.,https://highered.karnataka.gov.in/
+  
+168,Anna Canteen Scheme,Welfare,Karnataka,0,120,All,All,All,No,All,All,Both,0,0,NONE,Provides subsidized meals at Anna Canteens across the state.,https://kswd.karnataka.gov.in/
+  
+169,Karnataka Rural Development and Panchayat Raj Scheme,Welfare,Karnataka,18,120,All,All,All,No,All,All,Rural,0,0,NONE,Supports rural infrastructure and livelihood development.,https://rdpr.karnataka.gov.in/
+  
+170,Kalyana Lakshmi and Shaadi Mubarak Scheme,Women,Karnataka,18,40,Female,All,All,No,Married,All,Both,0,200000,SPECIFIC,Financial assistance for marriage of daughters and women.,https://wcd.karnataka.gov.in/
+  
+171,Karnataka Divyangjan Empowerment Scheme,Employement,Karnataka,0,120,All,All,All,Yes,All,All,Both,0,0,NONE,Support and skill development for persons with disabilities.,https://sjsa.karnataka.gov.in/
+  
+172,Raita Suraksha Yojana,Agriculture,Karnataka,18,75,All,All,All,No,All,Farmer,Rural,0,0,NONE,Crop insurance and risk support scheme for farmers.,https://agri.karnataka.gov.in/
+  
+173,Karnataka Krishi Vidya Yojana,Agriculture,Karnataka,18,120,All,All,All,No,All,Farmer,Rural,0,0,NONE,Training and extension support scheme for farmers.,https://agri.karnataka.gov.in/
+  
+174,Karnataka Health Assurance Scheme,Health,Karnataka,0,120,All,All,All,No,All,All,Both,0,0,NONE,Provides comprehensive health cover for eligible families.,https://health.karnataka.gov.in/
+  
+175,Karnataka Skill Development Mission,Employment,Karnataka,18,45,All,All,All,No,All,Unemployed,Both,0,0,NONE,Skill training and job placement support for youth.,https://ksdm.karnataka.gov.in/
+  
+176,Karnataka Startup Seed Fund Scheme,Employment,Karnataka,18,45,All,All,All,No,All,Entrepreneur,Both,0,0,NONE,Seed funding and support for early-stage startups.,https://startup.karnataka.gov.in/
+  
+177,Delhi Mukhya Mantri Bal Arogya Yojana,Health,Delhi,0,18,All,All,All,No,Unmarried,Student,Both,0,0,NONE,Free health care and medical support for children.,https://health.delhi.gov.in/
+  
+178,Delhi Free Electricity Scheme,Welfare,Delhi,0,120,All,All,All,No,All,All,Both,0,0,NONE,Subsidized electricity for eligible households.,https://delhi.gov.in/
+  
+179,Delhi Chief Minister Rozgar Guarantee Scheme,Employment,Delhi,18,60,All,All,All,No,All,Unemployed,Both,0,0,NONE,Employment guarantee and support for job seekers.,https://delhi.gov.in/
+  
+180,Delhi Free Bus Ride Scheme,Other,Delhi,60,120,All,All,All,No,All,Unemployed,Both,0,0,NONE,Free travel for senior citizens on public buses.,https://transport.delhi.gov.in/
+  
+181,Delhi Student Scholarship Scheme,Education,Delhi,5,25,All,All,All,No,Unmarried,Student,Both,0,200000,SPECIFIC,Scholarship support for meritorious and needy students.,https://education.delhi.gov.in/
+  
+182,Delhi Women’s Safety Initiative,Women,Delhi,18,60,Female,All,All,No,All,All,Both,0,0,NONE,Program enhancing safety and security for women in public spaces.,https://delhi.gov.in/
+  
+183,Delhi Divyangjan Empowerment Scheme,Employment,Delhi,0,120,All,All,All,Yes,All,All,Both,0,0,NONE,Support and assistive services for persons with disabilities.,https://socialwelfare.delhi.gov.in/
+  
+184,Delhi Child Nutrition Support Scheme,Health,Delhi,0,6,All,All,All,No,All,All,Both,0,0,NONE,Nutritional support for children under 6 years.,https://health.delhi.gov.in/
+  
+185,Delhi Affordable Housing Scheme,Welfare,Delhi,18,120,All,All,All,No,All,All,Urban,0,500000,SPECIFIC,Housing assistance for eligible middle- and low-income families.,https://delhi.gov.in/
+  
+186,Delhi Start-up and Innovation Policy,Employment,Delhi,18,60,All,All,All,No,All,Entrepreneur,Both,0,0,NONE,Support scheme for startups including funding and incubation.,https://startup.delhi.gov.in/
+  
+187,Delhi Free Wi-Fi Scheme,Education,Delhi,5,120,All,All,All,No,All,Student,Both,0,0,NONE,Free Wi-Fi in public spaces to improve digital access.,https://delhi.gov.in/
+  
+188,Delhi Kisan Support Scheme,Agriculture,Delhi,18,120,All,All,All,No,All,Farmer,Both,0,0,NONE,Subsidies and training support for farmers.,https://agridelhi.gov.in/
+  
+189,Delhi Clean Air Action Program,Welfare,Delhi,0,120,All,All,All,No,All,All,Both,0,0,NONE,Initiatives for reducing air pollution and improving health.,https://delhi.gov.in/
+  
+190,Delhi Free Medical Assistance Scheme,Health,Delhi,0,120,All,All,All,No,All,All,Both,0,0,NONE,Provides free medicines and medical aid to eligible residents.,https://health.delhi.gov.in/
+  
+191,Kerala Old Age Pension Scheme,Pension,Kerala,60,120,All,All,All,No,All,Unemployed,Both,0,36000,SPECIFIC,Provides pension support to senior citizens in Kerala.,https://socialsecurity.kerala.gov.in/
+  
+192,Kerala Student Assistance Scheme,Education,Kerala,5,25,All,All,All,No,Unmarried,Student,Both,0,200000,SPECIFIC,Financial assistance for students from economically weaker families.,https://education.kerala.gov.in/
+  
+193,Kerala Farmers’ Debt Relief Scheme,Agriculture,Kerala,18,75,All,All,All,No,All,Farmer,Rural,0,0,NONE,Provides financial relief to indebted farmers.,https://agriculture.kerala.gov.in/
+  
+194,Kerala Free Laptop Scheme,Education,Kerala,16,25,All,All,All,No,Unmarried,Student,Both,0,0,NONE,Free distribution of laptops to eligible students.,https://highereducation.kerala.gov.in/
+  
+195,Kerala Karunya Social Security Mission,Welfare,Kerala,0,120,All,All,All,No,All,All,Both,0,0,NONE,Integrated social security support for vulnerable families.,https://socialsecurity.kerala.gov.in/
+  
+196,Kerala Health Assurance Scheme,Health,Kerala,0,120,All,All,All,No,All,All,Both,0,0,NONE,Provides comprehensive health services and coverage.,https://health.kerala.gov.in/
+  
+197,Kerala Housing Board Subsidy,Other,Kerala,18,120,All,All,All,No,All,All,Both,0,300000,SPECIFIC,Housing support scheme for eligible families.,https://housing.kerala.gov.in/
+  
+198,Kerala Divyangjan Rehabilitation Scheme,Other,Kerala,0,120,All,All,All,Yes,All,All,Both,0,0,NONE,Rehabilitation support for persons with disabilities.,https://socialsecurity.kerala.gov.in/
+  
+199,Kerala Startup Mission Support,Employment,Kerala,18,45,All,All,All,No,All,Entrepreneur,Both,0,0,NONE,Support and funding for startups through incubation.,https://startupmission.kerala.gov.in/
+  
+200,Kerala Free Bus Pass Scheme,Other,Kerala,60,120,All,All,All,No,All,Unemployed,Both,0,0,NONE,Free travel on government buses for senior citizens.,https://transport.kerala.gov.in/
+  
+201,Pradhan Mantri Awas Yojana – Gramin (PMAY‑G),Housing,Central,18,120,All,All,All,No,All,Daily Wage Worker,Rural,0,300000,SPECIFIC,Aims to provide pucca housing to rural poor including daily wage families.,https://pmay‑grameen.gov.in/
+  
+202,National Rural Livelihood Mission (DAY‑NRLM),Employment,Central,18,60,All,All,All,No,All,Daily Wage Worker,Rural,0,0,NONE,Poverty reduction and livelihood promotion through SHGs & micro‑enterprises.,https://nsrapl.gov.in/
+  
+203,Pradhan Mantri Formalisation of Micro Food Processing Enterprises (PMFME),Employment,Central,18,60,All,All,All,No,All,Daily Wage Worker,Both,0,0,NONE,Credit‑linked subsidy for micro food processing enterprises aiding daily wage food processors.,https://pmfme.mofpi.gov.in/
+  
+204,Aswasakiranam Financial Assistance (Kerala),Welfare,State,0,120,All,All,All,No,All,Daily Wage Worker,Both,0,0,NONE,Financial support scheme for families in need including daily wage households.,https://socialsecurity.kerala.gov.in/
+  
+205,Birsa Munda Awas Yojana (Jharkhand),Welfare,State,18,120,All,All,All,No,All,Daily Wage Worker,Rural,0,250000,SPECIFIC,Housing assistance for poor households including daily wage workers.,https://state.bihar.gov.in/ *(representative)*
+  
+206,Mukhya Mantri Mazdoor Suraksha Yojana (MP),Welfare,State,18,60,All,All,All,No,All,Daily Wage Worker,Both,0,0,NONE,Social security support and insurance support for daily wage labourers.,https://state.mp.gov.in/
+  
+207,Niramaya Health Insurance (Himachal Pradesh),Health,State,18,65,All,All,All,No,All,Daily Wage Worker,Both,0,0,NONE,Health insurance for families and daily wage workers with low income.,https://hpssp.gov.in/
+  
+208,Mahatma Phule Jan Arogya Yojana (Maharashtra),Health,State,0,120,All,All,All,No,All,Daily Wage Worker,Both,0,0,NONE,State health insurance scheme covering medical costs for low‑income households.,https://www.jeevandayee.gov.in/
+  
+209,Rajasthan Berojgari Bhatta Yojana (Unemployment Allowance),Welfare,State,18,35,All,All,All,No,All,Unemployed,Both,0,0,NONE,Unemployment support payment for eligible unemployed including daily wage workers.,https://labour.rajasthan.gov.in/
+  
+210,Uttar Pradesh Rozgar Chhatravriti Yojana (UP Employment Support),Employment,State,18,40,All,All,All,No,Unmarried,Unemployed,Both,0,0,NONE,Skill & employment assistance programmes for job seekers including daily wage youth.,https://sewayojan.up.gov.in/
+  
+211,Rajasthan Berojgari Bhatta Yojana (Unemployment Allowance),Welfare,State,18,35,All,All,All,No,All,Unemployed,Both,0,0,NONE,Unemployment support payment for eligible unemployed including daily wage workers.,https://labour.rajasthan.gov.in/
+  
+212,Uttar Pradesh Rozgar Chhatravriti Yojana (UP Employment Support),Employment,State,18,40,All,All,All,No,Unmarried,Unemployed,Both,0,0,NONE,Skill & employment assistance programmes for job seekers including daily wage youth.,https://sewayojan.up.gov.in/
+  
+213,Aswasakiranam Financial Assistance (Kerala),Welfare,State,0,120,All,All,All,No,All,Daily Wage Worker,Both,0,0,NONE,Financial support scheme for families in need including daily wage households.,https://socialsecurity.kerala.gov.in/
+  
+214,Birsa Munda Awas Yojana (Jharkhand),Welfare,State,18,120,All,All,All,No,All,Daily Wage Worker,Rural,0,250000,SPECIFIC,Housing assistance for poor households including daily wage workers.,https://state.bihar.gov.in/ *(representative)*
+  
+215,Mukhya Mantri Mazdoor Suraksha Yojana (MP),Welfare,State,18,60,All,All,All,No,All,Unemployed,Both,0,0,NONE,Social security support and insurance support for daily wage labourers.,https://state.mp.gov.in/
+  
+216,Niramaya Health Insurance (Himachal Pradesh),Health,State,18,65,All,All,All,No,All,Daily Wage Worker,Both,0,0,NONE,Health insurance for families and daily wage workers with low income.,https://hpssp.gov.in/
+  
+217,State Child Care Support for Working Mothers,Welfare,State,0,6,All,All,All,No,All,Unemployed,Both,0,0,NONE,Childcare support and creche facilities for working/daily wage mothers.,https://statewcd.gov.in/
+  
+218,Central Government Health Scheme (CGHS),Health,Central,18,65,All,All,All,No,All,Government Employee,Both,0,0,NONE,Comprehensive health care and medical services for eligible central government employees and pensioners.,https://cghs.gov.in/
+  
+219,Leave Travel Concession (LTC),Welfare,Central,18,65,All,All,All,No,All,Government Employee,Both,0,0,NONE,Reimbursement of travel expenses for government employees and families during leave period.,https://financialservices.gov.in/
+  
+220,National Pension System (NPS),Pension,Central,18,60,All,All,All,No,All,Government Employee,Both,0,0,NONE,Voluntary retirement savings pension scheme for government employees and others.,https://npscra.nsdl.co.in/
+  
+221,Employee Provident Fund (EPF),Other,Central,18,65,All,All,All,No,All,Private Employee,Both,0,0,NONE,Social security savings scheme mandatory for most central government employees and workers.,https://epfindia.gov.in/
+  
+222,Central Government Group Insurance Scheme (CGIS),Other,Central,18,65,All,All,All,No,All,Government Employee,Both,0,0,NONE,Group life insurance for central government employees with financial protection for beneficiaries.,https://financialservices.gov.in/
+  
+223,Pradhan Mantri Vaya Vandana Yojana (PMVVY),Pension,Central,60,120,All,All,All,No,All,Government Employee,Both,0,0,NONE,Pension scheme with guaranteed returns for senior citizens including retired government employees.,https://pfrda.org.in/
+  
+224,Transport Allowance (TA),Other,Central,18,65,All,All,All,No,All,Government Employee,Both,0,0,NONE,Monthly transport allowance provided to central government employees for commuting to office.,https://financialservices.gov.in/
+  
+225,Housing Loan Concession for Government Employees,Welfare,Central,18,60,All,All,All,No,All,Government Employee,Both,0,0,NONE,Subsidised home loan facility for government employees under central schemes.,https://centralgovtloan.gov.in/
+  
+226,State Government Employees’ Group Insurance,Other,State,18,65,All,All,All,No,All,Government Employee,Both,0,0,NONE,Life and accident insurance provided by many state governments for their employees.,https://state.gov.in/
+  
+227,State Government Pension Scheme,Pension,State,18,65,All,All,All,No,All,Government Employee,Both,0,0,NONE,Pension benefits for eligible state government employees after retirement.,https://state.gov.in/
+  
+228,Medical Reimbursement Scheme for State Govt Employees,Health,State,18,65,All,All,All,No,All,Government Employee,Both,0,0,NONE,Reimbursement of medical expenses for state government employees and dependents.,https://statehealth.gov.in/
+  
+229,HRA – House Rent Allowance,Welfare,Central/State,18,65,All,All,All,No,All,Government Employee,Both,0,0,NONE,Housing rent compensation allowance given to government employees to meet rental expenses.,https://financialservices.gov.in/
+  
+230,Leave Encashment Benefit,Welfare,Central/State,18,65,All,All,All,No,All,Government Employee,Both,0,0,NONE,Cash payment for unutilised earned leave at retirement or during service.,https://financialservices.gov.in/
+  
+231,Government Employee Skill Upgradation Program,Employment,Central/State,18,60,All,All,All,No,All,Government Employee,Both,0,0,NONE,Training support programs to upgrade skills of government employees.,https://skillindia.gov.in/
+  
+232,State Government Housing Society Loan Subsidy,Welfare,State,18,65,All,All,All,No,All,Government Employee,Both,0,0,NONE,Subsidised loans for home purchase offered by state government housing societies.,https://statehousing.gov.in/
+  
+233,Deendayal Antyodaya Yojana – National Urban Livelihoods Mission (DAY-NULM),Employment,Central,18,60,All,All,All,No,All,Unemployed,Urban,0,0,NONE,Skill training and self-employment support for urban poor including daily wage workers.,https://nulm.gov.in/
+  
+234,Deen Dayal Upadhyaya Grameen Kaushalya Yojana (DDU-GKY),Employment,Central,18,35,All,All,All,No,All,Unemployed,Rural,0,0,NONE,Skill development and placement support for rural youth including daily wage workers.,https://ddugky.gov.in/
+  
+235,Pradhan Mantri Shram Yogi Maandhan (PM-SYM),Pension,Central,18,40,All,All,All,Yes,All,Unemployed,Both,0,0,NONE,Voluntary pension scheme for unorganised sector workers with monthly contribution and pension.,https://maandhan.in/
+  
+236,PM-Ujjwala Yojana,Welfare,Central,18,120,Female,All,All,No,Married,Daily Wage Worker,Both,0,0,NONE,Free LPG connections for low-income women including daily wage households.,https://pmuy.gov.in/
+  
+237,PM SVANidhi,Employment,Central,18,65,All,All,All,No,All,Self-employed,Urban,0,0,NONE,Collateral-free micro loans for street vendors including daily wage sellers.,https://pmsvanidhi.mohua.gov.in/
+  
+238,Atal Beemit Vyakti Kalyan Yojana (ABVKY),Welfare,Central,18,60,All,All,All,No,All,Unemployed,Both,0,0,NONE,Cash support benefit for insured persons during unemployment under EPF scheme.,https://epfindia.gov.in/
+  
+239,National Social Security Fund for Unorganized Workers,Welfare,Central,18,60,All,All,All,No,All,Unemployed,Both,0,0,NONE,Social security and welfare for unorganised sector including daily wage workers.,https://labour.gov.in/
+  
+240,Mahatma Gandhi National Rural Employment Guarantee Act (MGNREGA),Employment,Central,18,60,All,All,All,No,All,Daily Wage Worker,Both,0,0,NONE,Provides 100 days of guaranteed wage employment to rural households.,https://nrega.nic.in/
+  
+241,State Building & Other Construction Workers Welfare Scheme,Welfare,State,18,60,All,All,All,No,All,Daily Wage Worker,Both,0,0,NONE,Social security and benefits for registered construction workers.,https://mahabocw.in/
+  
+242,State Daily Wage Worker Health Insurance,Health,State,18,65,All,All,All,No,All,Daily Wage Worker,Both,0,0,NONE,Health insurance scheme offered by many states for daily wage workers.,https://statehealth.gov.in/
+  
+243,State Unorganized Workers Pension Scheme,Pension,State,18,60,All,All,All,Yes,All,Unemployed,Both,0,0,NONE,Pension support for unorganized sector/daily wage workers in several states.,https://statewelfare.gov.in/
+  
+244,State Skill Training & Placement Scheme,Employment,State,18,45,All,All,All,No,All,Unemployed,Both,0,0,NONE,Skill training and job placement support for daily wage and unorganized workers.,https://stateskillmission.gov.in/
+  
