@@ -36,22 +36,20 @@ if os.getenv("LANGCHAIN_API_KEY"):
     os.environ["LANGCHAIN_API_KEY"] = os.getenv("LANGCHAIN_API_KEY")
     os.environ["LANGCHAIN_PROJECT"] = os.getenv("LANGCHAIN_PROJECT", "yojana-sarathi")
 
-# ---------------- FLASK APP ----------------
+
 app = FastAPI()
 #app.secret_key =  SECRET_KEY   # session safety
 app.add_middleware(SessionMiddleware, secret_key="yojana_sarathi")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-# Separate LLM instances: one for the page-4 scheme summary/briefing,
-# one for the chatbot. max_tokens raised on the summary model so the
-# more detailed benefits/documents/eligibility content isn't cut off.
+
 llm_summary = ChatGroq(model="llama-3.3-70b-versatile", api_key=GROQ_API_KEY_SUMMARY, max_tokens=2048)
-llm_chat = ChatGroq(model="llama-3.3-70b-versatile", api_key=GROQ_API_KEY_CHAT, max_tokens=1024)
+llm_chat = ChatGroq(model="llama-3.3-70b-versatile", api_key=GROQ_API_KEY_CHAT, max_tokens=2048)
 
 """Function to call Groq for the Page 4 scheme summary/briefing"""
 def ask_ai(prompt):
-    """Function to call Groq (summary key) for the scheme briefing on Page 4"""
+    
     try:
         response = llm_summary.invoke([HumanMessage(content=prompt)])
 
