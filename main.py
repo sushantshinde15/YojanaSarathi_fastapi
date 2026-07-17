@@ -38,14 +38,19 @@ if os.getenv("LANGCHAIN_API_KEY"):
 
 
 app = FastAPI()
-#app.secret_key =  SECRET_KEY   # session safety
-app.add_middleware(SessionMiddleware, secret_key="yojana_sarathi")
+if not SECRET_KEY:
+    print("WARNING: FLASK_SECRET is not set in .env - using a temporary secret key. "
+          "Sessions will be invalidated every time the server restarts. "
+          "Set FLASK_SECRET in your .env for production use.")
+    import secrets as _secrets
+    SECRET_KEY = _secrets.token_hex(32)
+app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 templates.env.cache = None  # Workaround for Jinja2/Python 3.14 cache bug (TypeError: unhashable type: 'dict')
 
 
-llm_summary = ChatGroq(model="llama-3.3-70b-versatile", api_key=GROQ_API_KEY_SUMMARY, max_tokens=2048)
+llm_summary = ChatGroq(model="llama-3.3-70b-versatile", api_key=GROQ_API_KEY_SUMMARY, max_tokens=8192)
 llm_chat = ChatGroq(model="llama-3.3-70b-versatile", api_key=GROQ_API_KEY_CHAT, max_tokens=2048)
 
 """Function to call Groq for the Page 4 scheme summary/briefing"""
@@ -98,15 +103,72 @@ def ask_chatbot(user_message, history=None):
         return f"AI Exception: {str(e)}"
 
 
+# ---------------- SQLITE DATABASE (feedback + translation cache) ----------------
+DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "feedback.db")
+
+def init_translation_cache_db():
+    """Create the translation cache table if it doesn't already exist.
+
+    Stores the RAW translated string only (never the "(English)" suffixed
+    version t() adds on top) so t() and t_clean() can both read from the
+    same cached row instead of doubling up on entries.
+    """
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS translations (
+            source_text TEXT NOT NULL,
+            lang TEXT NOT NULL,
+            translated_text TEXT NOT NULL,
+            PRIMARY KEY (source_text, lang)
+        )
+    """)
+    conn.commit()
+    conn.close()
+
+init_translation_cache_db()
+
+
+def get_or_translate(text, lang):
+    """Return the cached translation of `text` into `lang`, translating
+    and caching it on first use only. Every later call for the same
+    (text, lang) pair - from any user, on any page - hits SQLite instead
+    of calling out to GoogleTranslator again.
+    """
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT translated_text FROM translations WHERE source_text = ? AND lang = ?",
+        (text, lang)
+    )
+    row = cur.fetchone()
+    if row:
+        conn.close()
+        return row[0]
+
+    try:
+        translated = GoogleTranslator(source="en", target=lang).translate(text)
+    except Exception:
+        conn.close()
+        # Don't cache failures - a transient API issue shouldn't get
+        # permanently "stuck" as the cached result for this string.
+        return text
+
+    cur.execute(
+        "INSERT OR REPLACE INTO translations (source_text, lang, translated_text) VALUES (?, ?, ?)",
+        (text, lang, translated)
+    )
+    conn.commit()
+    conn.close()
+    return translated
+
+
 # ---------------- TRANSLATION FUNCTION ----------------
 def t(text, lang):
     if not text or lang == "en":
         return text
-    try:
-        translated = GoogleTranslator(source="en", target=lang).translate(text)
-        return f"{translated} ({text})"
-    except:
-        return f"{text} ({text})"
+    translated = get_or_translate(text, lang)
+    return f"{translated} ({text})"
 
 # Expose t() to Jinja templates so shared layout text (base.html navbar,
 # disclaimer, chat widget) can be translated too, not just page-specific labels.
@@ -123,25 +185,53 @@ for col in numeric_columns:
 model = joblib.load("scheme_model.pkl")
 
 # ---------------- FEEDBACK DATABASE ----------------
-DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "feedback.db")
-
 def init_feedback_db():
-    """Create the feedback table (SQLite) if it doesn't already exist."""
+    """Create the feedback table (SQLite) if it doesn't already exist.
+
+    Columns match the actual fields submitted by feedback.html's form
+    (name, email, category, message) - the table previously had
+    rating/comments columns that the form never sent, so submissions
+    were silently dropping the email, category, and message content.
+    """
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
     cur.execute("""
         CREATE TABLE IF NOT EXISTS feedback (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT,
-            rating TEXT,
-            comments TEXT,
+            email TEXT,
+            category TEXT,
+            message TEXT,
             created_at TEXT DEFAULT CURRENT_TIMESTAMP
         )
     """)
     conn.commit()
+
+    # Lightweight migration for anyone with an existing feedback.db from
+    # before this fix: add any missing columns instead of erroring out.
+    cur.execute("PRAGMA table_info(feedback)")
+    existing_cols = {row[1] for row in cur.fetchall()}
+    for col in ("email", "category", "message"):
+        if col not in existing_cols:
+            cur.execute(f"ALTER TABLE feedback ADD COLUMN {col} TEXT")
+    conn.commit()
     conn.close()
 
 init_feedback_db()
+
+# ---------------- SALARY / INCOME BRACKETS (single source of truth) ----------------
+# Previously this list was redefined separately (and inconsistently) in
+# is_eligible(), calculate_priority(), page2(), and page3() - with different
+# brackets/casing in each place. Now every part of the app pulls from this
+# one list so eligibility filtering, scoring, and the dropdown always agree.
+SALARY_RANGES = [
+    {"label": "No Income", "min": 0, "max": 0},
+    {"label": "Below ₹1,00,000", "min": 0, "max": 100000},
+    {"label": "₹1,00,000 – ₹2,50,000", "min": 100000, "max": 250000},
+    {"label": "₹2,50,001 – ₹5,00,000", "min": 250001, "max": 500000},
+    {"label": "₹5,00,001 – ₹10,00,000", "min": 500001, "max": 1000000},
+    {"label": "Above ₹10,00,000", "min": 1000000, "max": 10000000},
+]
 
 # Define weights for rule-based scoring
 WEIGHTS = {
@@ -170,6 +260,12 @@ def normalize(value):
     value = " ".join(value.split())
 
     return value
+
+# Derived salary lookup tables (built here, after normalize() exists).
+# Keyed by normalized label -> (min, max), used by is_eligible().
+SALARY_MAP_NORMALIZED = {normalize(r["label"]): (r["min"], r["max"]) for r in SALARY_RANGES}
+# Keyed by the exact label -> (min, max), used by calculate_priority() / page3().
+SALARY_MAP_EXACT = {r["label"]: (r["min"], r["max"]) for r in SALARY_RANGES}
 
 # ---------------- ELIGIBILITY CHECK ----------------
 def is_eligible(user, scheme):
@@ -249,16 +345,7 @@ def is_eligible(user, scheme):
             return False
 
     # -------- INCOME --------
-    salary_map = {
-        "no income": (0, 0),
-        "below ₹1,00,000": (0, 100000),
-        "₹1,00,000 – ₹2,50,000": (100000, 250000),
-        "₹2,50,001 – ₹5,00,000": (250001, 500000),
-        "₹5,00,001 – ₹10,00,000": (500001, 1000000),
-        "above ₹10,00,000": (1000000, 10000000)
-    }
-
-    user_salary_range = salary_map.get(normalize(user.get("salary", "no income")), (0, 0))
+    user_salary_range = SALARY_MAP_NORMALIZED.get(normalize(user.get("salary", "No Income")), (0, 0))
     user_salary_mid = (user_salary_range[0] + user_salary_range[1]) / 2
 
     income_flag = normalize(scheme.get("income_limit_flag", "none"))
@@ -276,15 +363,8 @@ def is_eligible(user, scheme):
 def calculate_priority(user, scheme):
     score = 0
 
-    # Salary mapping
-    salary_map = {
-        "No Income": (0, 0),
-        "Below ₹1,00,000": (0, 100000),
-        "₹1,00,000 – ₹2,50,000": (100000, 250000),
-        "₹2,50,001 – ₹5,00,000": (250001, 500000),
-        "Above ₹10,00,000": (1000000, 10000000)  # Arbitrary upper limit
-    }
-    user_salary_range = salary_map.get(user.get('salary', 'No Income'), (0, 0))
+    # Salary mapping (shared source of truth - see SALARY_MAP_EXACT)
+    user_salary_range = SALARY_MAP_EXACT.get(user.get('salary', 'No Income'), (0, 0))
     user_salary_mid = (user_salary_range[0] + user_salary_range[1]) / 2
 
     # State
@@ -369,29 +449,33 @@ async def home(request: Request):
 # ---------------- ABOUT US ----------------
 @app.get("/about")
 async def about(request: Request):
-    return templates.TemplateResponse("about.html", {"request": request})
+    lang = request.query_params.get("lang") or request.session.get("lang", "en")
+    return templates.TemplateResponse("about.html", {"request": request, "lang": lang})
 
 # ---------------- FEEDBACK ----------------
 @app.api_route("/feedback", methods=["GET", "POST"])
 async def feedback(request: Request):
+    lang = request.query_params.get("lang") or request.session.get("lang", "en")
+
     if request.method == "POST":
         form = await request.form()
         name = form.get("name")
-        rating = form.get("rating")
-        comments = form.get("comments")
+        email = form.get("email")
+        category = form.get("category")
+        message = form.get("message")
 
         conn = sqlite3.connect(DB_PATH)
         cur = conn.cursor()
         cur.execute(
-            "INSERT INTO feedback (name, rating, comments) VALUES (?, ?, ?)",
-            (name, rating, comments)
+            "INSERT INTO feedback (name, email, category, message) VALUES (?, ?, ?, ?)",
+            (name, email, category, message)
         )
         conn.commit()
         conn.close()
 
         return RedirectResponse(url=request.url_for("home"), status_code=302)
 
-    return templates.TemplateResponse("feedback.html", {"request": request})
+    return templates.TemplateResponse("feedback.html", {"request": request, "lang": lang})
 
 
 # ---------------- PAGE 2 ----------------
@@ -451,13 +535,7 @@ async def page2(request: Request):
         "Student","Farmer","Self Employed","Private Employee",
         "Government Employee","Unemployed","Daily Wage Worker","Other"
     ]
-    salary_ranges = [
-        {"label": "No Income", "min": 0, "max": 0},
-        {"label": "Below ₹1,00,000", "min": 0, "max": 100000},
-        {"label": "₹1,00,000 – ₹2,50,000", "min": 100000, "max": 250000},
-        {"label": "₹2,50,001 – ₹5,00,000", "min": 250001, "max": 500000},
-        {"label": "Above ₹10,00,000", "min": 1000000, "max": float("inf")}
-    ]
+    salary_ranges = SALARY_RANGES
     marital_status = ["Married","Unmarried","Widow"]
 
     # Translate dropdowns
@@ -493,6 +571,7 @@ async def page2(request: Request):
             "residence": residence_types[residence_display.index(form.get("residence"))],
             "occupation": occupations[occupations_display.index(form.get("occupation"))],
             "marital_status": marital_status[marital_status_display.index(form.get("marital_status"))],
+            "salary": selected_salary["label"],
             "salary_min": selected_salary["min"],
             "salary_max": selected_salary["max"],
             "minority": yes_no[yes_no_display.index(form.get("minority"))],
@@ -514,29 +593,17 @@ async def page3(request: Request):
 
     # ---- Translation helper ----
     def t_scheme(text):
-        if lang == "en":
+        if lang == "en" or not text:
             return text
-        try:
-            translated = GoogleTranslator(source="en", target=lang).translate(text)
-            return f"{translated} ({text})"
-        except:
-            return text
+        translated = get_or_translate(text, lang)
+        return f"{translated} ({text})"
 
     schemes = schemes_df.to_dict(orient="records")
     eligible_schemes = []
 
 
-    # ---- Salary mapping ----
-    salary_map = {
-        "No Income": (0, 0),
-        "Below ₹1,00,000": (0, 100000),
-        "₹1,00,000 – ₹2,50,000": (100000, 250000),
-        "₹2,50,001 – ₹5,00,000": (250001, 500000),
-        "₹5,00,001 – ₹10,00,000": (500001, 1000000),
-        "Above ₹10,00,000": (1000000, 10000000)
-    }
-
-    user_salary_range = salary_map.get(user_data.get("salary", "No Income"), (0, 0))
+    # ---- Salary mapping (shared source of truth - see SALARY_MAP_EXACT) ----
+    user_salary_range = SALARY_MAP_EXACT.get(user_data.get("salary", "No Income"), (0, 0))
     salary_mid = sum(user_salary_range) / 2
 
     # ---- Process schemes ----
@@ -617,6 +684,9 @@ async def page3(request: Request):
             "hero_labels": hero_labels, # Add this
             "user_name": user_data.get("name", ""), # Ensure name is passed
             "most_recommended": eligible_schemes[:3],
+            # Computed here (not sliced in the template) so it's always the
+            # next batch after "most_recommended", however many schemes exist.
+            "moderately_recommended": eligible_schemes[3:6],
             "all_schemes": eligible_schemes,
             "central_schemes": central_schemes,
             "state_schemes": state_schemes,
@@ -634,11 +704,7 @@ def t_clean(text, lang):
     if text.lower() == "hi" and lang == "mr":
         return "नमस्कार"
 
-    try:
-        # Returns only the translated string
-        return GoogleTranslator(source="en", target=lang).translate(text)
-    except:
-        return text
+    return get_or_translate(text, lang)
 
 templates.env.globals["t_clean"] = t_clean
 # ---------------- PAGE 4 (AI BRIEFING) ----------------
@@ -659,6 +725,66 @@ LANG_MAP = {
     "as": "Assamese",
     "ur": "Urdu"
 }
+def _parse_briefing_json(briefing_content):
+    """Parse the AI's JSON briefing response, repairing common truncation issues.
+
+    Indic-language responses (Kannada, Marathi, Tamil, etc.) can hit the
+    model's max_tokens limit before the JSON closes properly, since those
+    scripts use far more tokens per character than English. Rather than
+    dumping the raw/truncated JSON text into `overview`, try to salvage a
+    partial-but-usable result by auto-closing unterminated strings/braces.
+    """
+    # 1. Try parsing as-is first.
+    try:
+        return json.loads(briefing_content)
+    except Exception:
+        pass
+
+    # 2. Isolate the JSON object (in case of stray leading/trailing text).
+    start = briefing_content.find("{")
+    if start == -1:
+        return {"overview": briefing_content, "benefits": [], "eligibility": [], "documents": []}
+    candidate = briefing_content[start:]
+
+    try:
+        return json.loads(candidate)
+    except Exception:
+        pass
+
+    # 3. Attempt to repair a truncated response: if it cuts off mid-string,
+    # close the string, then close any open arrays/objects.
+    repaired = candidate.rstrip()
+    # Drop a trailing comma before we patch things up.
+    repaired = repaired.rstrip(",")
+
+    # If the number of unescaped double-quotes is odd, we're mid-string -> close it.
+    quote_count = len(re_findall_unescaped_quotes(repaired))
+    if quote_count % 2 == 1:
+        repaired += '"'
+
+    open_braces = repaired.count("{") - repaired.count("}")
+    open_brackets = repaired.count("[") - repaired.count("]")
+    repaired += "]" * max(open_brackets, 0)
+    repaired += "}" * max(open_braces, 0)
+
+    try:
+        return json.loads(repaired)
+    except Exception:
+        # 4. Give up gracefully: at least don't show raw JSON syntax to the user.
+        return {
+            "overview": briefing_content.replace("{", "").replace("}", "").replace('"', ""),
+            "benefits": [],
+            "eligibility": [],
+            "documents": []
+        }
+
+
+def re_findall_unescaped_quotes(text):
+    """Return list of unescaped double-quote positions (used to detect an open string)."""
+    import re
+    return re.findall(r'(?<!\\)"', text)
+
+
 # ---------------- PAGE 4 (AI BRIEFING) ----------------
 
 @app.get("/scheme/{scheme_name:path}")
@@ -720,10 +846,7 @@ Rules:
     if briefing_content.startswith("```"):
         briefing_content = briefing_content.split("```json")[-1].split("```")[0].strip()
 
-    try:
-        briefing_data = json.loads(briefing_content)
-    except:
-        briefing_data = {"overview": briefing_content, "benefits": [], "eligibility": [], "documents": []}
+    briefing_data = _parse_briefing_json(briefing_content)
 
     def make_list(items):
         return "<ul>" + "".join([f"<li>{i}</li>" for i in items]) + "</ul>"

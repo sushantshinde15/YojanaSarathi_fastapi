@@ -97,41 +97,41 @@ body{
             <div class="col-lg-6 col-md-8">
                 <div class="feedback-card">
                     <div class="feedback-header">
-                        <h1>📝 Feedback</h1>
+                        <h1>📝 {{ t_clean("Feedback", current_lang) }}</h1>
                     </div>
 
                     <div class="feedback-highlight">
-                        Your insights help us improve <span class="brand-text">Yojana Sarathi</span>.
-                        We value your suggestions and experience.
+                        {{ t_clean("Your insights help us improve", current_lang) }} <span class="brand-text">Yojana Sarathi</span>.
+                        {{ t_clean("We value your suggestions and experience.", current_lang) }}
                     </div>
 
                     <form action="{{ url_for('feedback') }}" method="POST">
                         <div class="mb-3">
-                            <label for="name" class="form-label">Full Name</label>
-                            <input type="text" class="form-control" id="name" name="name" placeholder="John Doe" required>
+                            <label for="name" class="form-label">{{ t_clean("Full Name", current_lang) }}</label>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="{{ t_clean('John Doe', current_lang) }}" required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email Address</label>
+                            <label for="email" class="form-label">{{ t_clean("Email Address", current_lang) }}</label>
                             <input type="email" class="form-control" id="email" name="email" placeholder="john@example.com" required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="category" class="form-label">Feedback Category</label>
+                            <label for="category" class="form-label">{{ t_clean("Feedback Category", current_lang) }}</label>
                             <select class="form-control" id="category" name="category">
-                                <option value="general">General Feedback</option>
-                                <option value="bug">Report a Bug</option>
-                                <option value="suggestion">Feature Suggestion</option>
-                                <option value="scheme">Scheme Information Accuracy</option>
+                                <option value="general">{{ t_clean("General Feedback", current_lang) }}</option>
+                                <option value="bug">{{ t_clean("Report a Bug", current_lang) }}</option>
+                                <option value="suggestion">{{ t_clean("Feature Suggestion", current_lang) }}</option>
+                                <option value="scheme">{{ t_clean("Scheme Information Accuracy", current_lang) }}</option>
                             </select>
                         </div>
 
                         <div class="mb-3">
-                            <label for="message" class="form-label">Your Message</label>
-                            <textarea class="form-control" id="message" name="message" rows="5" placeholder="Tell us what you think..." required></textarea>
+                            <label for="message" class="form-label">{{ t_clean("Your Message", current_lang) }}</label>
+                            <textarea class="form-control" id="message" name="message" rows="5" placeholder="{{ t_clean('Tell us what you think...', current_lang) }}" required></textarea>
                         </div>
 
-                        <button type="submit" class="btn-submit">Send Feedback</button>
+                        <button type="submit" class="btn-submit">{{ t_clean("Send Feedback", current_lang) }}</button>
                     </form>
                 </div>
             </div>
@@ -141,6 +141,6 @@ body{
 {% endblock %}
 
 {% block disclaimer %}
-<b>DISCLAIMER:</b> Yojana Sarathi is an AI-powered academic project created for informational purposes only.
-Feedback is used solely for project improvement and educational assessment.
+<b>{{ t_clean("DISCLAIMER:", current_lang) }}</b> {{ t_clean("Yojana Sarathi is an AI-powered academic project created for informational purposes only.", current_lang) }}
+{{ t_clean("Feedback is used solely for project improvement and educational assessment.", current_lang) }}
 {% endblock %}

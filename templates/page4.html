@@ -60,7 +60,7 @@ body{
 /* TABS */
 .tabs-container{
     display:flex;
-    justify-content:space-between;
+    justify-content:flex-start;
     align-items:center;
     margin:18px 0;
 }
@@ -148,15 +148,38 @@ body{
 
 /* MOBILE FIX: keep the speaker/header inside the screen on small phones */
 @media (max-width: 480px){
+    .scheme-container{
+        padding:18px;
+        border-radius:10px;
+    }
     .scheme-header{
         flex-wrap:wrap;
+        gap:12px;
+        margin-bottom:14px;
+    }
+    .scheme-icon{
+        width:48px;
+        height:48px;
+        font-size:22px;
     }
     .scheme-title{
-        font-size:24px;
+        font-size:22px;
     }
     .tabs-container{
         flex-wrap:wrap;
         gap:10px;
+    }
+    .tab{
+        padding:7px 14px;
+        font-size:0.9rem;
+    }
+    .info-card{
+        padding:16px;
+    }
+    .speaker{
+        left:16px;
+        bottom:80px;
+        width:42px;
     }
 }
 {% endblock %}
@@ -199,7 +222,6 @@ body{
               <div class="tab" onclick="scrollToSection('eligibility')">{{ labels.eligibility_tab }}</div>
               <div class="tab" onclick="scrollToSection('documents')">{{ labels.documents_tab }}</div>
             </div>
-            <button onclick="translatePage()" class="btn btn-sm btn-outline-primary">🌐 Translate</button>
         </div>
 
         <!-- SUMMARY -->
@@ -213,7 +235,7 @@ body{
             {{ benefits | safe }}
         </div>
 
-        <div class="row mt-4">
+        <div class="row g-3 mt-4">
             <!-- ELIGIBILITY -->
             <div class="col-md-6">
             <div class="info-card eligibility">
@@ -284,42 +306,7 @@ function updateActiveTab(activeId) {
 }
 
 /* =====================================================
-   2. TRANSLATION  (unchanged)
-===================================================== */
-let isEnglish = false;
-
-async function translatePage() {
-    const targetLang = isEnglish ? "{{ lang }}" : "en";
-    const btn = event.target;
-    btn.innerText = "Processing...";
-
-    const sections = [
-        { id:"summary",         type:"html" },
-        { id:"benefits",        type:"html" },
-        { id:"eligibility-text",type:"html" },
-        { id:"documents-text",  type:"html" }
-    ];
-
-    for (let item of sections) {
-        const el = document.getElementById(item.id);
-        if (!el) continue;
-        try {
-            const res  = await fetch("/api/translate", {
-                method: "POST",
-                headers: { "Content-Type":"application/json" },
-                body: JSON.stringify({ text: el.innerText, target_lang: targetLang })
-            });
-            const data = await res.json();
-            el.innerHTML = data.translated_text;
-        } catch (err) { console.error("Translation error:", err); }
-    }
-
-    isEnglish = !isEnglish;
-    btn.innerText = isEnglish ? "🌐 Show Original" : "🌐 Translate to English";
-}
-
-/* =====================================================
-   3. SPEAKER / TTS  (enhanced with voice auto-read)
+   2. SPEAKER / TTS  (enhanced with voice auto-read)
 ===================================================== */
 const speaker  = document.getElementById("speakerBtn");
 const audio    = document.getElementById("ttsAudio");
@@ -379,7 +366,7 @@ async function toggleSpeak() {
 speaker.addEventListener("click", toggleSpeak);
 
 /* =====================================================
-   4. AUTO-READ ON LOAD (voice mode)
+   3. AUTO-READ ON LOAD (voice mode)
 ===================================================== */
 window.addEventListener("load", () => {
     if (sessionStorage.getItem("voiceMode") === "on") {

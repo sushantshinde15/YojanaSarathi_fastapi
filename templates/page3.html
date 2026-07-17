@@ -190,9 +190,45 @@ font-size:1em;
 @media (max-width: 768px){
     .card-columns-wrapper{
         flex-direction:column;
+        gap:16px;
     }
     .hero-title{
         font-size:2rem;
+    }
+}
+@media (max-width: 576px){
+    .hero-section{
+        padding:20px 0 10px 0;
+    }
+    .hero-title{
+        font-size:1.5rem;
+    }
+    .hero-text{
+        font-size:1rem;
+        margin-bottom:16px;
+    }
+    .section-title{
+        font-size:19px;
+        margin-bottom:16px;
+    }
+    .panel-header-green,
+    .panel-header-yellow,
+    .panel-header-blue{
+        padding:12px 16px;
+        font-size:0.95rem;
+    }
+    .scheme-item{
+        padding:14px;
+        margin:12px 0;
+    }
+    .scheme-title{
+        font-size:0.98rem;
+    }
+    .card-column{
+        padding:14px;
+    }
+    .row.g-4.mb-5{
+        --bs-gutter-y:1rem;
     }
 }
 {% endblock %}
@@ -268,7 +304,7 @@ Eligibility Match: {{ (s.final_score * 100) | round(1) }}%
 
 <div class="scheme-wrapper">
 
-{% for s in all_schemes[3:6] %}
+{% for s in moderately_recommended %}
 
 <a href="{{ url_for('page4', scheme_name=s.raw_name) }}" class="scheme-link">
 
@@ -388,7 +424,7 @@ const highSchemes = [
 ];
 
 const moderateSchemes = [
-    {% for s in all_schemes[3:6] %}
+    {% for s in moderately_recommended %}
     { name: "{{ s.name | replace('"','') }}", desc: "{{ s.description | replace('"','') }}", score: "{{ (s.final_score*100)|round(1) }}", raw_name: "{{ s.raw_name }}" },
     {% endfor %}
 ];

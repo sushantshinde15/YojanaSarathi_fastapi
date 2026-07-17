@@ -208,9 +208,47 @@ body{
         font-size:34px;
     }
 }
-@media (max-width: 420px){
+@media (max-width: 576px){
+    .hero{
+        padding:10px 0 30px 0;
+    }
+    .hero-title{
+        font-size:28px;
+        margin-bottom:12px;
+    }
+    .hero-text{
+        font-size:15px;
+        margin-bottom:22px;
+    }
+    .mini-search{
+        margin-bottom:22px !important;
+    }
+    .language-title{
+        margin-bottom:12px;
+    }
     .language-grid{
         grid-template-columns:repeat(3,1fr);
+        gap:8px;
+    }
+    .lang-btn{
+        padding:8px;
+        font-size:13px;
+    }
+    .image-card{
+        margin-top:16px;
+    }
+    .image-card img{
+        max-width:260px;
+    }
+    .how-section{
+        margin-top:40px;
+    }
+    .how-title{
+        margin-bottom:26px;
+        font-size:1.4rem;
+    }
+    .scheme-card{
+        padding:22px;
     }
 }
 {% endblock %}
@@ -321,10 +359,25 @@ const searchInputField = document.getElementById('schemeSearch');
 const suggestionsBox   = document.getElementById('suggestionsBox');
 
 /* =====================================================
+   PERSIST LANGUAGE TO SERVER SESSION
+   Uses the same /set-language/{code} route the navbar
+   dropdown uses, so a choice made here sticks across
+   every page (About, Feedback, etc.) - not just page2.
+===================================================== */
+async function persistLanguage(lang) {
+    try {
+        await fetch("/set-language/" + lang, { method: "GET" });
+    } catch (err) {
+        console.error("Could not persist language to server session:", err);
+    }
+}
+
+/* =====================================================
    REDIRECTION & MANUAL SEARCH
 ===================================================== */
-function goToPage2(lang) {
+async function goToPage2(lang) {
     sessionStorage.setItem("language", lang);
+    await persistLanguage(lang);
     window.location.href = "/page2?lang=" + lang;
 }
 
@@ -465,7 +518,9 @@ function askLanguage(attempts) {
         speak("Defaulting to English. Taking you to the form.", () => {
             sessionStorage.setItem("language", "en");
             sessionStorage.setItem("voiceMode", "on");
-            window.location.href = "/page2?lang=en";
+            persistLanguage("en").then(() => {
+                window.location.href = "/page2?lang=en";
+            });
         });
         return;
     }
@@ -480,8 +535,10 @@ function askLanguage(attempts) {
                 highlightLangButton(code);
                 sessionStorage.setItem("language", code);
                 sessionStorage.setItem("voiceMode", "on");
-                speak(LANG_CONFIRM[code] || LANG_CONFIRM["en"], () => {
-                    window.location.href = "/page2?lang=" + code;
+                persistLanguage(code).then(() => {
+                    speak(LANG_CONFIRM[code] || LANG_CONFIRM["en"], () => {
+                        window.location.href = "/page2?lang=" + code;
+                    });
                 });
             } else {
                 askLanguage(attempts + 1);
