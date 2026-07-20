@@ -19,7 +19,6 @@ from difflib import get_close_matches
 from dotenv import load_dotenv
 load_dotenv()
 
-# 2. Retrieve the variables
 # NOTE: Summary (page 4 AI briefing) and Chatbot now use SEPARATE Groq API keys.
 # If the dedicated keys aren't set in .env, both fall back to GROQ_API_KEY so
 # nothing breaks for existing setups.
@@ -27,15 +26,6 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 GROQ_API_KEY_SUMMARY = os.getenv("GROQ_API_KEY_SUMMARY", GROQ_API_KEY)
 GROQ_API_KEY_CHAT = os.getenv("GROQ_API_KEY_CHAT", GROQ_API_KEY)
 SECRET_KEY = os.getenv("FLASK_SECRET")
-
-# ---------------- LANGSMITH TRACING ----------------
-# Set these in your .env: LANGCHAIN_API_KEY, LANGCHAIN_PROJECT (optional)
-if os.getenv("LANGCHAIN_API_KEY"):
-    os.environ["LANGCHAIN_TRACING_V2"] = "true"
-    os.environ["LANGCHAIN_ENDPOINT"] = os.getenv("LANGCHAIN_ENDPOINT", "https://api.smith.langchain.com")
-    os.environ["LANGCHAIN_API_KEY"] = os.getenv("LANGCHAIN_API_KEY")
-    os.environ["LANGCHAIN_PROJECT"] = os.getenv("LANGCHAIN_PROJECT", "yojana-sarathi")
-
 
 app = FastAPI()
 if not SECRET_KEY:
@@ -53,17 +43,12 @@ templates.env.cache = None  # Workaround for Jinja2/Python 3.14 cache bug (TypeE
 llm_summary = ChatGroq(model="llama-3.3-70b-versatile", api_key=GROQ_API_KEY_SUMMARY, max_tokens=8192)
 llm_chat = ChatGroq(model="llama-3.3-70b-versatile", api_key=GROQ_API_KEY_CHAT, max_tokens=2048)
 
-"""Function to call Groq for the Page 4 scheme summary/briefing"""
 def ask_ai(prompt):
-    
+    """Call Groq for the Page 4 scheme summary/briefing."""
     try:
         response = llm_summary.invoke([HumanMessage(content=prompt)])
-
         content = response.content
-
-        # DEBUG LINE (keep during testing)
         print("Groq (summary) response:", content)
-
         return content
 
     except Exception as e:
@@ -93,14 +78,27 @@ def ask_chatbot(user_message, history=None):
 
         response = llm_chat.invoke(messages)
         content = response.content
-
-        # DEBUG LINE (keep during testing)
         print("Groq (chat) response:", content)
-
         return content
 
     except Exception as e:
         return f"AI Exception: {str(e)}"
+
+
+# ---------------- PRE-BUILT STATIC TRANSLATIONS (fast path, works on Render) ----------------
+# Generated once (locally) by extract_translations.py and committed to the repo.
+# Loaded into memory at startup so known page text never needs a live translation
+# call, on Render or anywhere else. Anything NOT found here (dynamic AI/chatbot
+# text) falls through to the existing SQLite cache + live GoogleTranslator path.
+TRANSLATIONS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "translations.json")
+try:
+    with open(TRANSLATIONS_PATH, "r", encoding="utf-8") as _f:
+        STATIC_TRANSLATIONS = json.load(_f)
+    print(f"Loaded {len(STATIC_TRANSLATIONS)} pre-translated strings from translations.json")
+except FileNotFoundError:
+    STATIC_TRANSLATIONS = {}
+    print("WARNING: translations.json not found - all translations will hit the live "
+          "API + SQLite cache. Run extract_translations.py to generate it.")
 
 
 # ---------------- SQLITE DATABASE (feedback + translation cache) ----------------
@@ -130,11 +128,21 @@ init_translation_cache_db()
 
 
 def get_or_translate(text, lang):
-    """Return the cached translation of `text` into `lang`, translating
-    and caching it on first use only. Every later call for the same
-    (text, lang) pair - from any user, on any page - hits SQLite instead
-    of calling out to GoogleTranslator again.
+    """Return the translation of `text` into `lang`.
+
+    Lookup order:
+    1. STATIC_TRANSLATIONS (translations.json, pre-built and shipped with the
+       code) - instant, no I/O, works identically on Render since it's part
+       of the deployed repo.
+    2. SQLite cache (feedback.db) - fine locally, but ephemeral on Render's
+       free tier (wiped on restart/redeploy), so only a fallback.
+    3. Live GoogleTranslator call - only reached for text that's genuinely
+       new (e.g. freshly generated AI content) or wasn't pre-built yet.
     """
+    static = STATIC_TRANSLATIONS.get(text, {}).get(lang)
+    if static:
+        return static
+
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
     cur.execute(
@@ -175,13 +183,11 @@ def t(text, lang):
 templates.env.globals["t"] = t
 
 # ---------------- CSV SCHEMES ----------------
-# Load schemes CSV
 schemes_df = pd.read_csv("test.csv")
 numeric_columns = ["min_age", "max_age", "min_income", "max_income"]
 for col in numeric_columns:
     schemes_df[col] = pd.to_numeric(schemes_df[col], errors="coerce").fillna(0)
 
-# Load ML model
 model = joblib.load("scheme_model.pkl")
 
 # ---------------- FEEDBACK DATABASE ----------------
@@ -233,7 +239,6 @@ SALARY_RANGES = [
     {"label": "Above ₹10,00,000", "min": 1000000, "max": 10000000},
 ]
 
-# Define weights for rule-based scoring
 WEIGHTS = {
     "state": 4,
     "income": 4,
@@ -267,9 +272,7 @@ SALARY_MAP_NORMALIZED = {normalize(r["label"]): (r["min"], r["max"]) for r in SA
 # Keyed by the exact label -> (min, max), used by calculate_priority() / page3().
 SALARY_MAP_EXACT = {r["label"]: (r["min"], r["max"]) for r in SALARY_RANGES}
 
-# ---------------- ELIGIBILITY CHECK ----------------
 def is_eligible(user, scheme):
-
     # -------- USER VALUES --------
     user_state = normalize(user.get("state"))
     user_gender = normalize(user.get("gender"))
@@ -294,39 +297,30 @@ def is_eligible(user, scheme):
     min_age = int(scheme.get("min_age", 0))
     max_age = int(scheme.get("max_age", 120))
 
-    # -------- AGE --------
     if not (min_age <= user_age <= max_age):
         return False
 
-    # -------- STATE --------
     if scheme_state not in ["all", "state", user_state]:
         return False
 
-    # -------- GENDER --------
     if scheme_gender not in ["all", user_gender]:
         return False
 
-    # -------- CASTE --------
     if scheme_caste not in ["all", user_caste]:
         return False
 
-    # -------- MINORITY --------
     if scheme_minority not in ["all", user_minority]:
         return False
 
-    # -------- DISABILITY --------
     if scheme_disability not in ["all", user_disability]:
         return False
 
-    # -------- MARITAL STATUS --------
     if scheme_marital not in ["all", user_marital]:
         return False
 
-    # -------- RESIDENCE --------
     if scheme_residence not in ["both", user_residence]:
         return False
 
-    # -------- OCCUPATION --------
     if scheme_occupation != "all":
 
         occ_list = [normalize(o) for o in scheme_occupation.split(",")]
@@ -344,7 +338,6 @@ def is_eligible(user, scheme):
         if not any(o in occ_list for o in allowed_user_types):
             return False
 
-    # -------- INCOME --------
     user_salary_range = SALARY_MAP_NORMALIZED.get(normalize(user.get("salary", "No Income")), (0, 0))
     user_salary_mid = (user_salary_range[0] + user_salary_range[1]) / 2
 
@@ -359,58 +352,47 @@ def is_eligible(user, scheme):
             return False
 
     return True
-# ---------------- calculate_priority (weighted score) ----------------
+# Weighted score used to rank eligible schemes (higher = better match for this user)
 def calculate_priority(user, scheme):
     score = 0
 
-    # Salary mapping (shared source of truth - see SALARY_MAP_EXACT)
     user_salary_range = SALARY_MAP_EXACT.get(user.get('salary', 'No Income'), (0, 0))
     user_salary_mid = (user_salary_range[0] + user_salary_range[1]) / 2
 
-    # State
     if scheme['state'].lower() == user['state'].lower():
         score += WEIGHTS["state"]
     elif scheme['state'].lower() == "all":
         score += WEIGHTS["state"] * 0.5
 
-    # Income
     if scheme.get('income_limit_flag', 'NONE').upper() == "SPECIFIC":
         if scheme['min_income'] <= user_salary_mid <= scheme['max_income']:
             score += WEIGHTS["income"]
     else:
         score += WEIGHTS["income"] * 0.5
 
-    # Occupation
     if scheme['occupation'].lower() == user['occupation'].lower():
         score += WEIGHTS["occupation"]
     elif scheme['occupation'].lower() == "all":
         score += WEIGHTS["occupation"] * 0.5
 
-    # Age
     if scheme['min_age'] <= int(user['age']) <= scheme['max_age']:
         score += WEIGHTS["age"]
 
-    # Gender
     if scheme['gender'].lower() in [user['gender'].lower(), "all"]:
         score += WEIGHTS["gender"]
 
-    # Caste
     if scheme['caste'].lower() in [user['caste'].lower(), "all"]:
         score += WEIGHTS["caste"]
 
-    # Minority
     if scheme.get('minority', 'all').lower() in [user['minority'].lower(), "all"]:
         score += WEIGHTS["minority"]
 
-    # Disability
     if scheme.get('disabled', 'all').lower() in [user['disabled'].lower(), "all"]:
         score += WEIGHTS["disability"]
 
-    # Marital status
     if scheme.get('marital_status', 'all').lower() in [user.get('marital_status', '').lower(), "all"]:
         score += WEIGHTS["marital_status"]
 
-    # Residence
     if scheme.get('residence', 'both').lower() in [user['residence'].lower(), "both"]:
         score += WEIGHTS["residence"]
 
@@ -483,7 +465,6 @@ async def feedback(request: Request):
 async def page2(request: Request):
     lang = request.query_params.get("lang") or request.session.get("lang", "en")
 
-    # COMBINED LABELS (UI Text + Voice Prompts)
     labels = {
         # --- UI Text Labels ---
         "title": t("Basic Information", lang),
@@ -671,18 +652,29 @@ async def page3(request: Request):
         "all": t("All Schemes", lang),
         "central": t("Central Schemes", lang),
         "state": t("State Schemes", lang),
-        "highly_rec": t("Highly Recommended Schemes", lang), # Add this
-        "mod_rec": t("Moderately Recommended Schemes", lang)  # Add this
+        "highly_rec": t("Highly Recommended Schemes", lang),
+        "mod_rec": t("Moderately Recommended Schemes", lang)
     }
 
     none_text = t("None", lang)
+
+    # ---- Disclaimer (same pattern as page4) ----
+    labels = {
+        "disclaimer_bold": t_clean("DISCLAIMER:", lang),
+        "disclaimer_body": t_clean(
+            "Yojana Sarathi is an AI-powered academic project created for informational purposes only. "
+            "Always verify scheme details on official government portals before applying.",
+            lang
+        )
+    }
 
     return templates.TemplateResponse(
         "page3.html",
         {
             "request": request,
-            "hero_labels": hero_labels, # Add this
-            "user_name": user_data.get("name", ""), # Ensure name is passed
+            "hero_labels": hero_labels,
+            "labels": labels,
+            "user_name": user_data.get("name", ""),
             "most_recommended": eligible_schemes[:3],
             # Computed here (not sliced in the template) so it's always the
             # next batch after "most_recommended", however many schemes exist.
@@ -707,7 +699,6 @@ def t_clean(text, lang):
     return get_or_translate(text, lang)
 
 templates.env.globals["t_clean"] = t_clean
-# ---------------- PAGE 4 (AI BRIEFING) ----------------
 
 # Mapping language codes to full names for the AI prompt
 LANG_MAP = {
@@ -792,10 +783,8 @@ async def page4(request: Request, scheme_name: str):
     lang = request.session.get("lang", "en")
     target_lang_name = LANG_MAP.get(lang, "English")
 
-    # 1. Bilingual Title
     bilingual_title = t(scheme_name, lang)
 
-    # 2. Translate UI Labels
     labels = {
         "summary": t_clean("Summary", lang),
         "eligibility_tab": t_clean("Eligibility Criteria", lang),
@@ -814,8 +803,6 @@ async def page4(request: Request, scheme_name: str):
     selected_scheme = next((s for s in schemes if s['scheme_name'] == scheme_name), None)
     if not selected_scheme: return PlainTextResponse("Scheme not found", status_code=404)
 
-
-    # 2. Modify AI Prompt to use the selected language
     prompt = f"""
     You are an expert on Indian government welfare schemes.
     Provide a DETAILED, in-depth briefing on the scheme: "{scheme_name}".
@@ -856,7 +843,7 @@ Rules:
         {
             "request": request,
             "scheme_name": bilingual_title,
-            "labels": labels, # Pass labels to HTML
+            "labels": labels,
             "overview": briefing_data.get("overview", ""),
             "benefits": make_list(briefing_data.get("benefits", [])),
             "eligibility": make_list(briefing_data.get("eligibility", [])),
@@ -942,7 +929,6 @@ async def chat_api(request: Request):
 
     # ---- Ground the chatbot strictly in the schemes that exist in our database ----
     matched_scheme = find_matching_scheme(user_message) or (scheme_context if scheme_context else None)
-    scheme_data_context = build_scheme_grounding_context()
 
     scheme_instruction = ""
     scheme_page_url = None
@@ -953,11 +939,26 @@ async def chat_api(request: Request):
         if not matched_rows.empty:
             official_url = str(matched_rows.iloc[0].get("official_url", "") or "")
             scheme_page_url = f"/scheme/{quote(matched_scheme)}"
+
+            # Narrow the grounding context down to ONLY this one scheme, so the
+            # model can't wander into other schemes when the user has clearly
+            # asked about a specific one.
+            row = matched_rows.iloc[0].to_dict()
+            scheme_data_context = "\n".join(
+                f"{k}: {v}" for k, v in row.items() if str(v).strip() and str(v).lower() != "nan"
+            )
+
             scheme_instruction = f"""
-The user appears to be asking specifically about the scheme "{matched_scheme}", which IS present in our database.
-After answering their question using ONLY the information in the SCHEME DATABASE below, end your reply with a
-short, friendly question (in {target_lang_name}) asking whether they'd like to be taken to that scheme's page on
-this website, or would prefer to go directly to the scheme's official government website instead."""
+The user is asking specifically about the scheme "{matched_scheme}", which IS present in our database.
+Answer using ONLY the information for this one scheme in the SCHEME DATABASE below - do not bring in or
+mention any other scheme. After answering, end your reply with a short, friendly question (in {target_lang_name})
+asking whether they'd like to be taken to this scheme's detail page on this website for more information."""
+        else:
+            scheme_data_context = build_scheme_grounding_context()
+    else:
+        # No specific scheme identified - fall back to the full list so the
+        # bot can help the user discover/browse schemes.
+        scheme_data_context = build_scheme_grounding_context()
 
     prompt = f"""You are "Yojana Sarathi", a friendly assistant that helps Indian citizens
 understand government welfare schemes and how to apply for them.{context_line}
@@ -968,9 +969,10 @@ STRICT RULES:
 3. Structure your answer clearly and briefly using short sentences and "- " bullet points where relevant, instead of one long paragraph.
 4. Answer ONLY in {target_lang_name}, regardless of the language the question was asked in.
 5. Keep the answer concise (under 150 words) unless the user explicitly asks for more detail.
+6. Do NOT mention or write out URLs yourself in the reply text - the website will show a clickable link/button for the scheme page separately.
 {scheme_instruction}
 
-SCHEME DATABASE (only these schemes exist on this platform):
+SCHEME DATABASE:
 {scheme_data_context}
 
 User question: {user_message}"""
@@ -999,7 +1001,6 @@ async def tts(request: Request):
 
     return Response(content=mp3_fp.getvalue(), media_type="audio/mpeg")
 
-# --- ADD THIS ROUTE AT THE BOTTOM ---
 @app.post("/api/translate")
 async def translate_api(request: Request):
     data = await request.json()
@@ -1010,37 +1011,32 @@ async def translate_api(request: Request):
         return JSONResponse({"translated_text": ""})
 
     try:
-        # Translates the text to English (or back to original)
         translated = GoogleTranslator(source='auto', target=target_lang).translate(text)
         return JSONResponse({"translated_text": translated})
     except Exception as e:
         return JSONResponse({"translated_text": text, "error": str(e)})
 
-#------------------search bar -----------------
+# ---------------- SEARCH BAR ----------------
 @app.get("/api/suggestions")
 async def get_suggestions(request: Request):
     query = request.query_params.get("q", "").lower()
     if not query:
         return JSONResponse([])
 
-    # Filter schemes that contain the query string in their name
-    # You can also search in 'description' or 'category' for "related name" matching
     matches = schemes_df[
         schemes_df['scheme_name'].str.contains(query, case=False, na=False) |
         schemes_df['category'].str.contains(query, case=False, na=False)
     ]['scheme_name'].unique().tolist()
 
-    return JSONResponse(matches[:8])  # Return top 8 matches
-
+    return JSONResponse(matches[:8])
 
 
 @app.get("/api/voice-match")
 async def voice_match(request: Request):
     query = request.query_params.get("q", "").lower()
-    # Get all actual scheme names from your CSV
     all_names = schemes_df['scheme_name'].tolist()
 
-    # find the 1 closest match. cutoff 0.3 allows for quite a bit of error
+    # cutoff 0.3 allows for a fair bit of speech-to-text error
     close_matches = get_close_matches(query, all_names, n=1, cutoff=0.3)
 
     if close_matches:
