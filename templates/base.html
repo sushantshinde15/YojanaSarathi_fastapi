@@ -9,19 +9,9 @@
 {% block head_extra %}{% endblock %}
 <style>
 /* ---------------- SHARED BASE STYLES ---------------- */
-html{
-    overflow-x:hidden;
-    width:100%;
-}
 body{
     font-family:'Segoe UI', sans-serif;
     margin:0;
-    overflow-x:hidden;
-    width:100%;
-    max-width:100vw;
-}
-*{
-    box-sizing:border-box;
 }
 
 /* NAVBAR */
@@ -481,95 +471,6 @@ body{
     }
 }
 
-/* =====================================================
-   MOBILE UI (separate from desktop layout)
-   Below the lg breakpoint the top navbar's link list +
-   hamburger dropdown are replaced by a bottom tab bar and
-   a language bottom-sheet — a proper mobile nav pattern
-   instead of a squeezed desktop menu. Desktop (>=992px)
-   is completely untouched.
-===================================================== */
-.ys-bottom-nav{ display:none; }
-.ys-lang-sheet, .ys-lang-sheet-backdrop{ display:none; }
-
-@media (max-width: 991.98px){
-    .navbar-toggler, .navbar-collapse{ display:none !important; }
-    body{ padding-bottom:78px; }
-
-    .ys-bottom-nav{
-        display:flex;
-        position:fixed;
-        left:0; right:0; bottom:0;
-        background:#ffffff;
-        border-top:1px solid #eef1f6;
-        box-shadow:0 -6px 20px rgba(0,20,50,0.08);
-        padding:6px 4px calc(6px + env(safe-area-inset-bottom));
-        justify-content:space-around;
-        z-index:1150;
-    }
-    .ys-bnav-item{
-        display:flex;
-        flex-direction:column;
-        align-items:center;
-        gap:2px;
-        flex:1;
-        padding:6px 2px;
-        border-radius:10px;
-        color:#7a8699;
-        text-decoration:none;
-        font-size:11px;
-        font-weight:600;
-        transition:background 0.2s ease, color 0.2s ease;
-    }
-    .ys-bnav-icon{ font-size:19px; line-height:1; }
-    .ys-bnav-item.active,
-    .ys-bnav-item:active{
-        color:#004a99;
-        background:#eef4ff;
-    }
-
-    .ysc-bubble{ right:16px; bottom:92px; }
-    .ysc-panel{ right:8px; left:8px; bottom:162px; width:auto; max-width:none; height:min(520px,64vh); max-height:calc(100vh - 260px); }
-
-    .ys-lang-sheet-backdrop{
-        display:block;
-        position:fixed; inset:0;
-        background:rgba(10,20,40,0.42);
-        opacity:0; pointer-events:none;
-        transition:opacity 0.2s ease;
-        z-index:1290;
-    }
-    .ys-lang-sheet-backdrop.ys-open{ opacity:1; pointer-events:auto; }
-
-    .ys-lang-sheet{
-        display:block;
-        position:fixed; left:0; right:0; bottom:0;
-        background:#fff;
-        border-radius:20px 20px 0 0;
-        box-shadow:0 -12px 40px rgba(10,25,55,0.25);
-        padding:14px 18px calc(18px + env(safe-area-inset-bottom));
-        max-height:70vh;
-        overflow-y:auto;
-        transform:translateY(100%);
-        transition:transform 0.25s ease;
-        z-index:1300;
-    }
-    .ys-lang-sheet.ys-open{ transform:translateY(0); }
-    .ys-lang-sheet-handle{ width:40px; height:4px; background:#e2e8f0; border-radius:4px; margin:0 auto 12px; }
-    .ys-lang-sheet h6{ text-align:center; font-weight:700; color:#1f3b73; margin-bottom:14px; }
-    .ys-lang-sheet-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
-    .ys-lang-sheet-item{
-        display:block; text-align:center;
-        padding:12px 8px; border-radius:10px;
-        background:#f7f9fc; color:#333;
-        text-decoration:none; font-weight:600; font-size:14px;
-        border:1.5px solid transparent;
-    }
-    .ys-lang-sheet-item.active{
-        background:#eef4ff; color:#004a99; border-color:#004a99;
-    }
-}
-
 {% block extra_css %}{% endblock %}
 </style>
 </head>
@@ -640,33 +541,6 @@ body{
 {% endblock %}
 </div>
 
-<!-- ================= MOBILE BOTTOM NAV (separate mobile UI) ================= -->
-<nav class="ys-bottom-nav">
-    <a href="{{ url_for('home') }}" class="ys-bnav-item{{ self.nav_home() }}">
-        <span class="ys-bnav-icon">🏠</span><span>{{ t("Home", current_lang) }}</span>
-    </a>
-    <a href="{{ url_for('about') }}" class="ys-bnav-item{{ self.nav_about() }}">
-        <span class="ys-bnav-icon">ℹ️</span><span>{{ t("About", current_lang) }}</span>
-    </a>
-    <a href="{{ url_for('feedback') }}" class="ys-bnav-item{{ self.nav_feedback() }}">
-        <span class="ys-bnav-icon">📝</span><span>{{ t("Feedback", current_lang) }}</span>
-    </a>
-    <a href="#" class="ys-bnav-item" id="ys-bnav-lang-toggle">
-        <span class="ys-bnav-icon">🌐</span><span>{{ t("Language", current_lang) }}</span>
-    </a>
-</nav>
-
-<div class="ys-lang-sheet-backdrop" id="ys-lang-sheet-backdrop"></div>
-<div class="ys-lang-sheet" id="ys-lang-sheet">
-    <div class="ys-lang-sheet-handle"></div>
-    <h6>🌐 {{ t("Select Language", current_lang) }}</h6>
-    <div class="ys-lang-sheet-grid">
-        {% for code, label in lang_options %}
-        <a class="ys-lang-sheet-item{% if current_lang == code %} active{% endif %}" href="/set-language/{{ code }}">{{ label }}</a>
-        {% endfor %}
-    </div>
-</div>
-
 <!-- ================= GLOBAL CHATBOT WIDGET ================= -->
 <button class="ysc-bubble" id="ysc-bubble" type="button" aria-label="Open chat">
     <span class="ysc-icon-chat">💬</span>
@@ -699,25 +573,6 @@ body{
 {% block chat_context %}{% endblock %}
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-(function () {
-    var bnavLangBtn = document.getElementById('ys-bnav-lang-toggle');
-    var langSheet    = document.getElementById('ys-lang-sheet');
-    var langBackdrop = document.getElementById('ys-lang-sheet-backdrop');
-    if (bnavLangBtn && langSheet && langBackdrop) {
-        bnavLangBtn.addEventListener('click', function (e) {
-            e.preventDefault();
-            langSheet.classList.add('ys-open');
-            langBackdrop.classList.add('ys-open');
-        });
-        langBackdrop.addEventListener('click', function () {
-            langSheet.classList.remove('ys-open');
-            langBackdrop.classList.remove('ys-open');
-        });
-    }
-})();
-</script>
-
 <script>
 (function () {
     var langDd     = document.getElementById('lang-dd');

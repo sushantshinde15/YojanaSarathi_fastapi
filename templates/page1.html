@@ -11,6 +11,7 @@
 {% block extra_css %}
 body{
     background:#FFF6E9;
+    overflow-x:hidden;
 }
 
 /* HERO */
@@ -193,115 +194,65 @@ body{
     animation: pulse-red 1.5s infinite;
 }
 
-/* =====================================================
-   MOBILE UI (real redesign, not a squeezed desktop layout)
-   Desktop (>=992px) is completely untouched above this block.
-===================================================== */
+/* MOBILE FIX: keep hero image inside the screen instead of overflowing (150% width was desktop-only) */
 @media (max-width: 991px){
-    .hero{
-        padding:14px 0 36px 0;
-    }
-    .hero .row{
-        flex-direction:column-reverse;
-    }
     .image-card{
         justify-content:center;
-        margin-top:0;
-        margin-bottom:6px;
+        margin-top:30px;
     }
     .image-card img{
-        width:52%;
-        max-width:190px;
+        width:100%;
+        max-width:420px;
         margin-left:0;
-        animation:none;
-        filter:drop-shadow(0 10px 16px rgba(0,0,0,0.12));
     }
     .hero-title{
-        font-size:28px;
-        text-align:center;
-        margin-bottom:10px;
+        font-size:34px;
     }
     .hero-title .line1{
         white-space:normal;
     }
+}
+@media (max-width: 576px){
+    .hero{
+        padding:10px 0 30px 0;
+    }
+    .hero-title{
+        font-size:28px;
+        margin-bottom:12px;
+    }
     .hero-text{
         font-size:15px;
-        text-align:center;
-        margin:0 auto 20px;
-        max-width:420px;
+        margin-bottom:22px;
     }
     .mini-search{
-        max-width:440px;
-        margin:0 auto 22px !important;
+        margin-bottom:22px !important;
     }
     .language-title{
-        text-align:center;
         margin-bottom:12px;
     }
     .language-grid{
-        display:flex;
-        flex-wrap:nowrap;
-        overflow-x:auto;
-        gap:10px;
-        max-width:100%;
-        padding:2px 2px 10px;
-        scroll-snap-type:x mandatory;
-        justify-content:flex-start;
-        -webkit-overflow-scrolling:touch;
+        grid-template-columns:repeat(3,1fr);
+        gap:8px;
     }
-    .language-grid::-webkit-scrollbar{ height:4px; }
     .lang-btn{
-        flex:0 0 auto;
-        white-space:nowrap;
-        scroll-snap-align:start;
-        padding:10px 16px;
+        padding:8px;
+        font-size:13px;
     }
-    button[onclick="startVoiceLanguage()"]{
-        display:block;
-        width:100%;
-        max-width:340px;
-        margin:16px auto 0;
-        padding:13px;
-        font-weight:700;
-        border-radius:50px;
-        text-align:center;
-    }
-
-    .how-section{
-        margin-top:44px;
-    }
-    .how-title{
-        font-size:1.35rem;
-        margin-bottom:22px;
-    }
-    .how-section .row{
-        display:flex;
-        flex-wrap:nowrap;
-        overflow-x:auto;
-        gap:16px;
-        scroll-snap-type:x mandatory;
-        padding-bottom:12px;
-        -webkit-overflow-scrolling:touch;
-    }
-    .how-section .row > div{
-        flex:0 0 80%;
-        max-width:300px;
-        scroll-snap-align:center;
-    }
-    .scheme-card{
-        height:auto;
-        padding:24px;
-    }
-}
-@media (max-width: 480px){
-    .hero-title{
-        font-size:24px;
+    .image-card{
+        margin-top:16px;
     }
     .image-card img{
-        max-width:150px;
+        max-width:260px;
     }
-    .how-section .row > div{
-        flex:0 0 86%;
+    .how-section{
+        margin-top:40px;
+    }
+    .how-title{
+        margin-bottom:26px;
+        font-size:1.4rem;
+    }
+    .scheme-card{
+        padding:22px;
     }
 }
 {% endblock %}
