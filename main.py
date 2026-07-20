@@ -429,7 +429,11 @@ async def home(request: Request):
     lang = request.session.get("lang") or request.query_params.get("lang", "en")
     if request.method == "POST":
         form = await request.form()
-        lang = form.get("language", "en")
+        # Only override the language if the form actually submitted one -
+        # otherwise fall back to whatever's already in the session, so
+        # navigating page1 -> page2 doesn't silently reset a language
+        # chosen earlier via the navbar dropdown.
+        lang = form.get("language") or request.session.get("lang", "en")
         request.session["lang"] = lang
         return RedirectResponse(url=request.url_for("page2"), status_code=302)
     labels = {"title": t("Yojana.ai - Home", lang)}
