@@ -198,9 +198,46 @@ body {
     .container-main{
         margin:35px auto;
     }
+}
+
+/* =====================================================
+   MOBILE "HOW IT WORKS" (real redesign): a swipeable
+   horizontal carousel instead of stacked full-width cards,
+   matching the pattern used on the home page. Desktop
+   (>=769px) keeps the original centered row of steps.
+===================================================== */
+@media (max-width: 768px){
+    .container-main{
+        margin:40px auto;
+    }
+    .about-card{
+        padding:28px 22px;
+    }
+    .how-section{
+        margin-top:56px;
+    }
+    .how-section h2{
+        font-size:1.5rem;
+        margin:12px 0 34px;
+    }
+    .steps{
+        flex-wrap:nowrap;
+        overflow-x:auto;
+        justify-content:flex-start;
+        gap:16px;
+        padding:2px 2px 12px;
+        scroll-snap-type:x mandatory;
+        -webkit-overflow-scrolling:touch;
+    }
     .step{
-        width:100%;
-        max-width:280px;
+        flex:0 0 78%;
+        max-width:260px;
+        width:auto;
+        scroll-snap-align:center;
+    }
+    .value-box:hover{
+        transform:none;
+        box-shadow:none;
     }
 }
 {% endblock %}

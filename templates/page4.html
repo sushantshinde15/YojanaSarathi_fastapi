@@ -178,8 +178,43 @@ body{
     }
     .speaker{
         left:16px;
-        bottom:80px;
         width:42px;
+    }
+}
+
+/* =====================================================
+   MOBILE SCHEME DETAIL (real redesign): tabs stick to the
+   top for quick jumping, and Apply becomes a floating
+   action bar so it's always reachable without hunting for
+   it at the bottom of a long page. Desktop is untouched.
+===================================================== */
+@media (max-width: 991px){
+    .tabs-container{
+        position:sticky;
+        top:0;
+        background:#fbf5ed;
+        z-index:60;
+        padding:10px 0;
+        margin:0 0 14px;
+    }
+    .scheme-container{
+        padding-bottom:96px;
+    }
+    .apply-link{
+        position:fixed;
+        left:16px;
+        right:16px;
+        bottom:80px;
+        z-index:70;
+        box-shadow:0 10px 24px rgba(47,143,84,0.35);
+        border-radius:10px;
+    }
+    .apply-btn{
+        width:100%;
+        margin:0;
+    }
+    .speaker{
+        bottom:150px;
     }
 }
 {% endblock %}
@@ -257,7 +292,7 @@ body{
             </div>
         </div>
 
-        <a href="{{ website }}" target="_blank">
+        <a href="{{ website }}" target="_blank" class="apply-link">
            <button class="apply-btn">{{ labels.apply_btn }}</button>
         </a>
     </div>

@@ -99,6 +99,61 @@ gap:60px;
         padding:12px 20px;
     }
 }
+
+/* =====================================================
+   MOBILE WIZARD (separate UI for small/tablet screens)
+   Below 992px the same fields are shown one step at a
+   time with a progress bar + Back/Next, instead of the
+   full desktop single-page form. Desktop is untouched;
+   this only activates via JS (ysWizard.js below).
+===================================================== */
+.ys-wizard-progress{ display:none; }
+.ys-wizard-steplabel{ display:none; }
+.ys-wizard-nav{ display:none; }
+
+@media (max-width: 991px){
+    .main-card{ padding:22px 18px; margin-top:18px; }
+
+    .ys-wizard-progress{
+        display:block;
+        height:6px;
+        background:#eef1f6;
+        border-radius:6px;
+        overflow:hidden;
+        margin-bottom:8px;
+    }
+    .ys-wizard-progress-bar{
+        height:100%;
+        width:33.3%;
+        background:linear-gradient(90deg,#1e4fa1,#5a8dd9);
+        transition:width 0.3s ease;
+    }
+    .ys-wizard-steplabel{
+        display:block;
+        font-size:12px;
+        font-weight:700;
+        color:#1b3b6f;
+        text-transform:uppercase;
+        letter-spacing:0.5px;
+        margin-bottom:18px;
+    }
+    .ys-wizard-nav{
+        display:flex;
+        gap:12px;
+        margin-top:26px;
+    }
+    .ys-wizard-btn{
+        flex:1;
+        padding:13px;
+        border-radius:10px;
+        border:none;
+        font-weight:700;
+        font-size:15px;
+    }
+    .ys-wizard-back{ background:#eef1f6; color:#1b3b6f; }
+    .ys-wizard-back[data-hidden="1"]{ visibility:hidden; }
+    .ys-wizard-next{ background:linear-gradient(90deg,#1e4fa1,#5a8dd9); color:#fff; }
+}
 {% endblock %}
 
 {% block content %}
@@ -123,9 +178,12 @@ gap:60px;
 <span id="vp_finish"     style="display:none">{{ labels.prompt_finish }}</span>
 
 <form method="POST" id="schemeForm">
-    <div class="section-header">{{ labels.personal_info }}</div>
+    <div class="ys-wizard-progress"><div class="ys-wizard-progress-bar" id="ysWizardBar"></div></div>
+    <div class="ys-wizard-steplabel" id="ysWizardStepLabel">Step 1 of 3</div>
 
-    <div class="row g-3 mb-4 align-items-end">
+    <div class="section-header" data-ys-step="1">{{ labels.personal_info }}</div>
+
+    <div class="row g-3 mb-4 align-items-end" data-ys-step="1">
         <div class="col-md-4">
             <label class="form-label">{{ labels.state }} <span class="text-danger">*</span></label>
             <select name="state" id="state" class="form-select" required>
@@ -163,7 +221,7 @@ gap:60px;
     </div>
 
     <div class="row g-3">
-        <div class="col-md-6">
+        <div class="col-md-6" data-ys-step="2">
             <div class="box">
                 <div class="section-header">{{ labels.social_category }}</div>
 
@@ -193,7 +251,7 @@ gap:60px;
             </div>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-6" data-ys-step="3">
             <div class="box">
                 <div class="section-header">{{ labels.economic_info }}</div>
 
@@ -229,7 +287,12 @@ gap:60px;
         </div>
     </div>
 
-    <div class="text-center mt-4">
+    <div class="ys-wizard-nav">
+        <button type="button" class="ys-wizard-btn ys-wizard-back" id="ysWizardBack" data-hidden="1">← Back</button>
+        <button type="button" class="ys-wizard-btn ys-wizard-next" id="ysWizardNext">Next →</button>
+    </div>
+
+    <div class="text-center mt-4" id="ysNativeSubmit">
         <button type="submit" class="scheme-btn">🔍 {{ labels.submit }}</button>
     </div>
 </form>
@@ -490,4 +553,72 @@ function startVoiceForm() {
 /* Boot is handled by page2.js — do NOT add a window.addEventListener here */
 </script>
 <script src="{{ url_for('static', path='js/page2.js') }}"></script>
+
+<script>
+/* =====================================================
+   MOBILE WIZARD — turns the same form fields into a
+   step-by-step flow below 992px. Desktop is unaffected:
+   this script simply never runs the show/hide logic there.
+   The voice assistant still works normally — it fills the
+   same underlying inputs regardless of which step is visible.
+===================================================== */
+document.addEventListener('DOMContentLoaded', function () {
+    if (window.innerWidth >= 992) return;
+
+    var stepEls   = Array.from(document.querySelectorAll('[data-ys-step]'));
+    var stepNums  = Array.from(new Set(stepEls.map(function (el) { return el.getAttribute('data-ys-step'); }))).sort();
+    var total     = stepNums.length;
+    var current   = 0;
+
+    var bar        = document.getElementById('ysWizardBar');
+    var label      = document.getElementById('ysWizardStepLabel');
+    var backBtn    = document.getElementById('ysWizardBack');
+    var nextBtn    = document.getElementById('ysWizardNext');
+    var nativeSub  = document.getElementById('ysNativeSubmit');
+    var form       = document.getElementById('schemeForm');
+
+    if (nativeSub) nativeSub.style.display = 'none';
+
+    function render() {
+        stepEls.forEach(function (el) {
+            el.style.display = (el.getAttribute('data-ys-step') === stepNums[current]) ? '' : 'none';
+        });
+        if (bar) bar.style.width = (((current + 1) / total) * 100) + '%';
+        if (label) label.textContent = 'Step ' + (current + 1) + ' of ' + total;
+        if (backBtn) backBtn.setAttribute('data-hidden', current === 0 ? '1' : '0');
+        if (nextBtn) nextBtn.textContent = (current === total - 1) ? '✅ Submit' : 'Next →';
+    }
+
+    function validateCurrent() {
+        var fields = document.querySelectorAll('[data-ys-step="' + stepNums[current] + '"] [required]');
+        for (var i = 0; i < fields.length; i++) {
+            if (!fields[i].checkValidity()) { fields[i].reportValidity(); return false; }
+        }
+        return true;
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', function () {
+            if (!validateCurrent()) return;
+            if (current === total - 1) {
+                if (form.requestSubmit) form.requestSubmit(); else form.submit();
+                return;
+            }
+            current++;
+            render();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+    if (backBtn) {
+        backBtn.addEventListener('click', function () {
+            if (current === 0) return;
+            current--;
+            render();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+
+    render();
+});
+</script>
 {% endblock %}

@@ -1,7 +1,7 @@
 import csv
 import io
 import sqlite3
-from urllib.parse import quote
+from urllib.parse import quote, urlsplit, urlunsplit, parse_qs, urlencode
 from gtts import gTTS
 from fastapi import FastAPI, Request
 from fastapi.responses import RedirectResponse, JSONResponse, PlainTextResponse, Response
@@ -25,13 +25,13 @@ load_dotenv()
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 GROQ_API_KEY_SUMMARY = os.getenv("GROQ_API_KEY_SUMMARY", GROQ_API_KEY)
 GROQ_API_KEY_CHAT = os.getenv("GROQ_API_KEY_CHAT", GROQ_API_KEY)
-SECRET_KEY = os.getenv("FLASK_SECRET")
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 app = FastAPI()
 if not SECRET_KEY:
-    print("WARNING: FLASK_SECRET is not set in .env - using a temporary secret key. "
+    print("WARNING: SECRET_KEY is not set in .env - using a temporary secret key. "
           "Sessions will be invalidated every time the server restarts. "
-          "Set FLASK_SECRET in your .env for production use.")
+          "Set SECRET_KEY in your .env for production use.")
     import secrets as _secrets
     SECRET_KEY = _secrets.token_hex(32)
 app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
@@ -412,14 +412,21 @@ async def set_language(request: Request, lang_code: str):
 
     referer = request.headers.get("referer")
     if referer:
-        return RedirectResponse(url=referer, status_code=302)
+        # Strip any leftover ?lang=... from the referer so it can't override
+        # the session value we just set (routes now prefer session anyway,
+        # but this keeps the URL itself from showing a stale language too).
+        parsed = urlsplit(referer)
+        query = parse_qs(parsed.query)
+        query.pop("lang", None)
+        clean_referer = urlunsplit(parsed._replace(query=urlencode(query, doseq=True)))
+        return RedirectResponse(url=clean_referer, status_code=302)
     return RedirectResponse(url=request.url_for("home"), status_code=302)
 
 
 # ---------------- PAGE 1 ----------------
 @app.api_route("/", methods=["GET", "POST"])
 async def home(request: Request):
-    lang = request.query_params.get("lang") or request.session.get("lang", "en")
+    lang = request.session.get("lang") or request.query_params.get("lang", "en")
     if request.method == "POST":
         form = await request.form()
         lang = form.get("language", "en")
@@ -431,13 +438,13 @@ async def home(request: Request):
 # ---------------- ABOUT US ----------------
 @app.get("/about")
 async def about(request: Request):
-    lang = request.query_params.get("lang") or request.session.get("lang", "en")
+    lang = request.session.get("lang") or request.query_params.get("lang", "en")
     return templates.TemplateResponse("about.html", {"request": request, "lang": lang})
 
 # ---------------- FEEDBACK ----------------
 @app.api_route("/feedback", methods=["GET", "POST"])
 async def feedback(request: Request):
-    lang = request.query_params.get("lang") or request.session.get("lang", "en")
+    lang = request.session.get("lang") or request.query_params.get("lang", "en")
 
     if request.method == "POST":
         form = await request.form()
@@ -463,7 +470,7 @@ async def feedback(request: Request):
 # ---------------- PAGE 2 ----------------
 @app.api_route("/page2", methods=["GET", "POST"])
 async def page2(request: Request):
-    lang = request.query_params.get("lang") or request.session.get("lang", "en")
+    lang = request.session.get("lang") or request.query_params.get("lang", "en")
 
     labels = {
         # --- UI Text Labels ---

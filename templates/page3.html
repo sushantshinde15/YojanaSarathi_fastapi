@@ -231,6 +231,57 @@ font-size:1em;
         --bs-gutter-y:1rem;
     }
 }
+
+/* =====================================================
+   MOBILE DASHBOARD (real redesign, not a squeezed desktop
+   layout): every section becomes a tap-to-expand accordion
+   instead of two cramped side-by-side columns. Desktop
+   (>=768px) keeps the original always-expanded panels.
+===================================================== */
+.ys-count-badge{ display:none; }
+@media (max-width: 767px){
+    .ys-count-badge{
+        display:inline-block;
+        background:rgba(255,255,255,0.28);
+        color:#fff;
+        font-size:0.72rem;
+        font-weight:700;
+        padding:1px 9px;
+        border-radius:20px;
+        margin-left:6px;
+        vertical-align:middle;
+    }
+    .panel-header-green,
+    .panel-header-yellow,
+    .panel-header-blue{
+        cursor:pointer;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+    }
+    .panel-header-green::after,
+    .panel-header-yellow::after,
+    .panel-header-blue::after{
+        content:"▾";
+        font-size:14px;
+        transition:transform 0.25s ease;
+        margin-left:8px;
+    }
+    .ys-collapsed::after{
+        transform:rotate(-90deg);
+    }
+    .scheme-wrapper{
+        max-height:3000px;
+        overflow:hidden;
+        transition:max-height 0.3s ease;
+    }
+    .scheme-wrapper.ys-closed{
+        max-height:0 !important;
+    }
+    .panel, .card-column{
+        margin-bottom:2px;
+    }
+}
 {% endblock %}
 
 {% block content %}
@@ -255,11 +306,11 @@ font-size:1em;
 
 <div class="panel">
 
-<div class="panel-header-green">
-    🟢 {{ column_titles.highly_rec }}
+<div class="panel-header-green" id="ysHeaderHigh">
+    🟢 {{ column_titles.highly_rec }} <span class="ys-count-badge">{{ most_recommended|length }}</span>
 </div>
 
-<div class="scheme-wrapper">
+<div class="scheme-wrapper" id="ysWrapHigh">
 
 {% for s in most_recommended %}
 
@@ -298,11 +349,11 @@ Eligibility Match: {{ (s.final_score * 100) | round(1) }}%
 
 <div class="panel">
 
-<div class="panel-header-yellow">
-    🟡 {{ column_titles.mod_rec }}
+<div class="panel-header-yellow" id="ysHeaderMod">
+    🟡 {{ column_titles.mod_rec }} <span class="ys-count-badge">{{ moderately_recommended|length }}</span>
 </div>
 
-<div class="scheme-wrapper">
+<div class="scheme-wrapper" id="ysWrapMod">
 
 {% for s in moderately_recommended %}
 
@@ -345,10 +396,11 @@ Eligibility Match: {{ (s.final_score * 100) | round(1) }}%
 
 <div class="card-column">
 
-<div class="panel-header-blue mb-3">
-    🏛 {{ column_titles.central }}
+<div class="panel-header-blue mb-3" id="ysHeaderCentral">
+    🏛 {{ column_titles.central }} <span class="ys-count-badge">{{ central_schemes|length }}</span>
 </div>
 
+<div class="scheme-wrapper" id="ysWrapCentral">
 {% for s in central_schemes %}
 
 <a href="{{ url_for('page4', scheme_name=s.raw_name) }}" class="scheme-link">
@@ -369,15 +421,17 @@ Official Website:
 </a>
 
 {% endfor %}
+</div>
 
 </div>
 
 <div class="card-column">
 
-<div class="panel-header-blue mb-3">
-    🏢 {{ column_titles.state }}
+<div class="panel-header-blue mb-3" id="ysHeaderState">
+    🏢 {{ column_titles.state }} <span class="ys-count-badge">{{ state_schemes|length }}</span>
 </div>
 
+<div class="scheme-wrapper" id="ysWrapState">
 {% for s in state_schemes %}
 
 <a href="{{ url_for('page4', scheme_name=s.raw_name) }}" class="scheme-link">
@@ -398,17 +452,13 @@ Official Website:
 </a>
 
 {% endfor %}
-
 </div>
 
 </div>
 
 </div>
-{% endblock %}
 
-{% block disclaimer %}
-<b>DISCLAIMER:</b> Yojana Sarathi is an AI-powered academic project created for informational purposes only.<br>
-Information shown may not always be accurate or up to date. Users must verify scheme details on official government portals before applying.
+</div>
 {% endblock %}
 
 {% block extra_js %}
@@ -442,4 +492,35 @@ const user_name = "{{ user_name }}";
 </script>
 <script src="{{ url_for('static', path='js/voice.js') }}"></script>
 <script src="{{ url_for('static', path='js/page3.js') }}"></script>
+
+<script>
+/* =====================================================
+   MOBILE ACCORDION — collapses each section into a
+   tap-to-expand panel below 768px. "Highly Recommended"
+   opens by default; the rest start collapsed so the page
+   doesn't feel crowded on first load. Desktop unaffected.
+===================================================== */
+document.addEventListener('DOMContentLoaded', function () {
+    if (window.innerWidth > 767) return;
+
+    var groups = [
+        { header: document.getElementById('ysHeaderHigh'),    body: document.getElementById('ysWrapHigh'),    openByDefault: true  },
+        { header: document.getElementById('ysHeaderMod'),     body: document.getElementById('ysWrapMod'),     openByDefault: false },
+        { header: document.getElementById('ysHeaderCentral'), body: document.getElementById('ysWrapCentral'), openByDefault: false },
+        { header: document.getElementById('ysHeaderState'),   body: document.getElementById('ysWrapState'),   openByDefault: false }
+    ];
+
+    groups.forEach(function (g) {
+        if (!g.header || !g.body) return;
+        if (!g.openByDefault) {
+            g.body.classList.add('ys-closed');
+            g.header.classList.add('ys-collapsed');
+        }
+        g.header.addEventListener('click', function () {
+            var nowClosed = g.body.classList.toggle('ys-closed');
+            g.header.classList.toggle('ys-collapsed', nowClosed);
+        });
+    });
+});
+</script>
 {% endblock %}

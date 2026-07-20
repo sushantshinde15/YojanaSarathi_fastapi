@@ -87,6 +87,37 @@ body{
         padding:30px 0;
     }
 }
+
+/* =====================================================
+   MOBILE FEEDBACK FORM (real redesign): edge-to-edge card,
+   larger touch targets for inputs, and a full-width sticky
+   submit button so it's easy to reach with a thumb.
+   Desktop (>=768px) keeps the original centered card.
+===================================================== */
+@media (max-width: 767px){
+    .main-content{
+        padding:22px 0 10px;
+        align-items:flex-start;
+    }
+    .feedback-card{
+        padding:22px 18px;
+        border-radius:16px;
+        box-shadow:0 8px 22px rgba(31,59,115,0.08);
+    }
+    .feedback-header h1{
+        font-size:1.5rem;
+    }
+    .form-control{
+        padding:13px 15px;
+        font-size:16px;
+    }
+    .btn-submit{
+        padding:14px;
+        font-size:1rem;
+        position:sticky;
+        bottom:calc(12px + env(safe-area-inset-bottom));
+    }
+}
 {% endblock %}
 
 {% block content %}
