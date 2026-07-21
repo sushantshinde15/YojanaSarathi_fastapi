@@ -1,6 +1,7 @@
 import csv
 import io
 import sqlite3
+import psycopg2
 from urllib.parse import quote, urlsplit, urlunsplit, parse_qs, urlencode
 from gtts import gTTS
 from fastapi import FastAPI, Request
@@ -26,6 +27,7 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 GROQ_API_KEY_SUMMARY = os.getenv("GROQ_API_KEY_SUMMARY", GROQ_API_KEY)
 GROQ_API_KEY_CHAT = os.getenv("GROQ_API_KEY_CHAT", GROQ_API_KEY)
 SECRET_KEY = os.getenv("SECRET_KEY")
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 app = FastAPI()
 if not SECRET_KEY:
@@ -85,11 +87,6 @@ def ask_chatbot(user_message, history=None):
         return f"AI Exception: {str(e)}"
 
 
-# ---------------- PRE-BUILT STATIC TRANSLATIONS (fast path, works on Render) ----------------
-# Generated once (locally) by extract_translations.py and committed to the repo.
-# Loaded into memory at startup so known page text never needs a live translation
-# call, on Render or anywhere else. Anything NOT found here (dynamic AI/chatbot
-# text) falls through to the existing SQLite cache + live GoogleTranslator path.
 TRANSLATIONS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "translations.json")
 try:
     with open(TRANSLATIONS_PATH, "r", encoding="utf-8") as _f:
@@ -102,7 +99,7 @@ except FileNotFoundError:
 
 
 # ---------------- SQLITE DATABASE (feedback + translation cache) ----------------
-DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "feedback.db")
+DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "translation_cache.db")
 
 def init_translation_cache_db():
     """Create the translation cache table if it doesn't already exist.
@@ -158,8 +155,7 @@ def get_or_translate(text, lang):
         translated = GoogleTranslator(source="en", target=lang).translate(text)
     except Exception:
         conn.close()
-        # Don't cache failures - a transient API issue shouldn't get
-        # permanently "stuck" as the cached result for this string.
+       
         return text
 
     cur.execute(
@@ -190,46 +186,38 @@ for col in numeric_columns:
 
 model = joblib.load("scheme_model.pkl")
 
-# ---------------- FEEDBACK DATABASE ----------------
+# ---------------- FEEDBACK DATABASE (Postgres - persists across redeploys) ----------------
+def get_feedback_db_connection():
+    """Open a new connection to the Postgres feedback database."""
+    return psycopg2.connect(DATABASE_URL)
+
 def init_feedback_db():
-    """Create the feedback table (SQLite) if it doesn't already exist.
+    """Create the feedback table in Postgres if it doesn't already exist.
 
     Columns match the actual fields submitted by feedback.html's form
-    (name, email, category, message) - the table previously had
-    rating/comments columns that the form never sent, so submissions
-    were silently dropping the email, category, and message content.
+    (name, email, category, message). SERIAL is Postgres's equivalent of
+    SQLite's INTEGER PRIMARY KEY AUTOINCREMENT.
     """
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_feedback_db_connection()
     cur = conn.cursor()
     cur.execute("""
         CREATE TABLE IF NOT EXISTS feedback (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             name TEXT,
             email TEXT,
             category TEXT,
             message TEXT,
-            created_at TEXT DEFAULT CURRENT_TIMESTAMP
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
     conn.commit()
-
-    # Lightweight migration for anyone with an existing feedback.db from
-    # before this fix: add any missing columns instead of erroring out.
-    cur.execute("PRAGMA table_info(feedback)")
-    existing_cols = {row[1] for row in cur.fetchall()}
-    for col in ("email", "category", "message"):
-        if col not in existing_cols:
-            cur.execute(f"ALTER TABLE feedback ADD COLUMN {col} TEXT")
-    conn.commit()
+    cur.close()
     conn.close()
 
 init_feedback_db()
 
 # ---------------- SALARY / INCOME BRACKETS (single source of truth) ----------------
-# Previously this list was redefined separately (and inconsistently) in
-# is_eligible(), calculate_priority(), page2(), and page3() - with different
-# brackets/casing in each place. Now every part of the app pulls from this
-# one list so eligibility filtering, scoring, and the dropdown always agree.
+
 SALARY_RANGES = [
     {"label": "No Income", "min": 0, "max": 0},
     {"label": "Below ₹1,00,000", "min": 0, "max": 100000},
@@ -266,10 +254,8 @@ def normalize(value):
 
     return value
 
-# Derived salary lookup tables (built here, after normalize() exists).
-# Keyed by normalized label -> (min, max), used by is_eligible().
+
 SALARY_MAP_NORMALIZED = {normalize(r["label"]): (r["min"], r["max"]) for r in SALARY_RANGES}
-# Keyed by the exact label -> (min, max), used by calculate_priority() / page3().
 SALARY_MAP_EXACT = {r["label"]: (r["min"], r["max"]) for r in SALARY_RANGES}
 
 def is_eligible(user, scheme):
@@ -412,9 +398,7 @@ async def set_language(request: Request, lang_code: str):
 
     referer = request.headers.get("referer")
     if referer:
-        # Strip any leftover ?lang=... from the referer so it can't override
-        # the session value we just set (routes now prefer session anyway,
-        # but this keeps the URL itself from showing a stale language too).
+        
         parsed = urlsplit(referer)
         query = parse_qs(parsed.query)
         query.pop("lang", None)
@@ -429,14 +413,11 @@ async def home(request: Request):
     lang = request.session.get("lang") or request.query_params.get("lang", "en")
     if request.method == "POST":
         form = await request.form()
-        # Only override the language if the form actually submitted one -
-        # otherwise fall back to whatever's already in the session, so
-        # navigating page1 -> page2 doesn't silently reset a language
-        # chosen earlier via the navbar dropdown.
+        
         lang = form.get("language") or request.session.get("lang", "en")
         request.session["lang"] = lang
         return RedirectResponse(url=request.url_for("page2"), status_code=302)
-    labels = {"title": t("Yojana.ai - Home", lang)}
+    labels = {"title": t("Yojana Sarathi - Home", lang)}
     return templates.TemplateResponse("page1.html", {"request": request, "labels": labels, "lang": lang})
 
 # ---------------- ABOUT US ----------------
@@ -457,13 +438,14 @@ async def feedback(request: Request):
         category = form.get("category")
         message = form.get("message")
 
-        conn = sqlite3.connect(DB_PATH)
+        conn = get_feedback_db_connection()
         cur = conn.cursor()
         cur.execute(
-            "INSERT INTO feedback (name, email, category, message) VALUES (?, ?, ?, ?)",
+            "INSERT INTO feedback (name, email, category, message) VALUES (%s, %s, %s, %s)",
             (name, email, category, message)
         )
         conn.commit()
+        cur.close()
         conn.close()
 
         return RedirectResponse(url=request.url_for("home"), status_code=302)
@@ -951,9 +933,7 @@ async def chat_api(request: Request):
             official_url = str(matched_rows.iloc[0].get("official_url", "") or "")
             scheme_page_url = f"/scheme/{quote(matched_scheme)}"
 
-            # Narrow the grounding context down to ONLY this one scheme, so the
-            # model can't wander into other schemes when the user has clearly
-            # asked about a specific one.
+            
             row = matched_rows.iloc[0].to_dict()
             scheme_data_context = "\n".join(
                 f"{k}: {v}" for k, v in row.items() if str(v).strip() and str(v).lower() != "nan"
@@ -967,8 +947,7 @@ asking whether they'd like to be taken to this scheme's detail page on this webs
         else:
             scheme_data_context = build_scheme_grounding_context()
     else:
-        # No specific scheme identified - fall back to the full list so the
-        # bot can help the user discover/browse schemes.
+        
         scheme_data_context = build_scheme_grounding_context()
 
     prompt = f"""You are "Yojana Sarathi", a friendly assistant that helps Indian citizens
@@ -1056,4 +1035,4 @@ async def voice_match(request: Request):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=5000, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=int(os.getenv("PORT", 5000)), reload=True)

@@ -1,0 +1,32 @@
+# ---- Secrets: never bake these into the image ----
+.env
+
+# ---- Local databases: must not ship stale/old data in the image ----
+feedback.db
+translation_cache.db
+
+# ---- Python junk ----
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# ---- Git & IDE ----
+.git/
+.gitignore
+.vscode/
+.idea/
+
+# ---- OS junk ----
+.DS_Store
+Thumbs.db
+
+# ---- Dev-only scripts and data (not needed at runtime) ----
+train_model.py
+extract_translations.py
+training_data.csv
+users.csv
+
+# ---- Docker files don't need to copy themselves in ----
+Dockerfile
+.dockerignore
