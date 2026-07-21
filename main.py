@@ -921,7 +921,25 @@ async def chat_api(request: Request):
     context_line = f' The user is currently viewing the scheme "{scheme_context}".' if scheme_context else ""
 
     # ---- Ground the chatbot strictly in the schemes that exist in our database ----
-    matched_scheme = find_matching_scheme(user_message) or (scheme_context if scheme_context else None)
+    # 1. Prefer a scheme explicitly named in THIS message (highest confidence / lets the
+    #    user switch topics whenever they want).
+    matched_scheme = find_matching_scheme(user_message)
+
+    # 2. Otherwise fall back to whatever scheme page they're currently viewing.
+    if not matched_scheme and scheme_context:
+        matched_scheme = scheme_context
+
+    # 3. Otherwise, act like a real chatbot with memory: look back through the
+    #    conversation (most recent turn first) for the last scheme that was named,
+    #    either by the user or by the bot's own previous answer. This is what lets
+    #    a follow-up like "tell me the eligibility" resolve to the scheme that was
+    #    just being discussed, instead of confusing the LLM with the whole database.
+    if not matched_scheme and history:
+        for turn in reversed(history):
+            candidate = find_matching_scheme(turn.get("content", ""))
+            if candidate:
+                matched_scheme = candidate
+                break
 
     scheme_instruction = ""
     scheme_page_url = None
